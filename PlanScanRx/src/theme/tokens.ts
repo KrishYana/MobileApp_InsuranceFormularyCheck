@@ -122,7 +122,7 @@ export const lightTheme: ThemeTokens = {
   googleButtonText: palette.foreground,
   googleButtonBorder: palette.muted,
 
-  splashBg: palette.black,
+  splashBg: palette.background,
 };
 
 export const darkTheme: ThemeTokens = {
@@ -179,5 +179,5 @@ export const darkTheme: ThemeTokens = {
   googleButtonText: palette.dark.foreground,
   googleButtonBorder: palette.dark.muted,
 
-  splashBg: palette.black,
+  splashBg: palette.dark.background,
 };

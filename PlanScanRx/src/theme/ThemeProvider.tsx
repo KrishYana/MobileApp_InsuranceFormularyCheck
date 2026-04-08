@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useCallback } from 'react';
 import { useColorScheme } from 'react-native';
 import { lightTheme, darkTheme, type ThemeTokens } from './tokens';
+import { useSettingsStore } from '../stores/settingsStore';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -15,14 +16,14 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const systemScheme = useColorScheme();
-  const [mode, setModeState] = useState<ThemeMode>('system');
+  const mode = useSettingsStore((s) => s.themeMode);
 
   const isDark =
     mode === 'dark' || (mode === 'system' && systemScheme === 'dark');
   const theme = isDark ? darkTheme : lightTheme;
 
   const setMode = useCallback((newMode: ThemeMode) => {
-    setModeState(newMode);
+    useSettingsStore.getState().setThemeMode(newMode);
   }, []);
 
   return (

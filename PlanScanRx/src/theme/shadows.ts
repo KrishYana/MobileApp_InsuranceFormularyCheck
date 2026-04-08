@@ -1,8 +1,10 @@
 // Neumorphic dual shadow system.
 // Every element gets TWO shadows: light (top-left) + dark (bottom-right).
 // React Native only supports one shadow per View, so we layer two Views.
+// Note: elevation is set to 0 to prevent Android's native elevation
+// from creating a double-shadow effect on top of our custom shadows.
 
-export type NeuShadowLevel = 'extruded' | 'extrudedSmall' | 'lifted' | 'none';
+export type NeuShadowLevel = 'extruded' | 'extrudedSmall' | 'pressed' | 'lifted' | 'none';
 
 export type NeuShadowPair = {
   light: {
@@ -38,14 +40,14 @@ export const NeuShadows: Record<NeuShadowLevel, NeuShadowPair> = {
       shadowOffset: { width: -9, height: -9 },
       shadowOpacity: 0.55,
       shadowRadius: 16,
-      elevation: 8,
+      elevation: 0,
     },
     dark: {
       shadowColor: '#A3B1C6',
       shadowOffset: { width: 9, height: 9 },
       shadowOpacity: 0.65,
       shadowRadius: 16,
-      elevation: 8,
+      elevation: 0,
     },
   },
   extrudedSmall: {
@@ -54,14 +56,31 @@ export const NeuShadows: Record<NeuShadowLevel, NeuShadowPair> = {
       shadowOffset: { width: -5, height: -5 },
       shadowOpacity: 0.5,
       shadowRadius: 10,
-      elevation: 4,
+      elevation: 0,
     },
     dark: {
       shadowColor: '#A3B1C6',
       shadowOffset: { width: 5, height: 5 },
       shadowOpacity: 0.6,
       shadowRadius: 10,
-      elevation: 4,
+      elevation: 0,
+    },
+  },
+  // Between extrudedSmall and inset — for actively-held-down buttons
+  pressed: {
+    light: {
+      shadowColor: '#FFFFFF',
+      shadowOffset: { width: -3, height: -3 },
+      shadowOpacity: 0.4,
+      shadowRadius: 6,
+      elevation: 0,
+    },
+    dark: {
+      shadowColor: '#A3B1C6',
+      shadowOffset: { width: 3, height: 3 },
+      shadowOpacity: 0.5,
+      shadowRadius: 6,
+      elevation: 0,
     },
   },
   lifted: {
@@ -70,14 +89,14 @@ export const NeuShadows: Record<NeuShadowLevel, NeuShadowPair> = {
       shadowOffset: { width: -12, height: -12 },
       shadowOpacity: 0.6,
       shadowRadius: 20,
-      elevation: 12,
+      elevation: 0,
     },
     dark: {
       shadowColor: '#A3B1C6',
       shadowOffset: { width: 12, height: 12 },
       shadowOpacity: 0.7,
       shadowRadius: 20,
-      elevation: 12,
+      elevation: 0,
     },
   },
   none: {
