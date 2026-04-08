@@ -48,4 +48,7 @@ export const queryKeys = {
   searchHistory: {
     all: ['searchHistory'] as const,
   },
+  articles: {
+    all: ['articles'] as const,
+  },
 } as const;
