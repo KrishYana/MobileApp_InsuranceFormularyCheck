@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Android build artifacts
+android/app/build/
+android/.gradle/
+android/build/
+android/app/.cxx/
+
+# iOS build artifacts
+ios/build/
+ios/Pods/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs and temp files
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Metro bundler
+.metro-health-check*
+
+# Buck
+buck-out/
+\.buckd/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
