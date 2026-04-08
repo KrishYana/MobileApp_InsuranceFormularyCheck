@@ -6,27 +6,31 @@ export type AuthStackParamList = {
   AuthLanding: undefined;
 };
 
-// Main tab navigator
+// Main tab navigator (3 visible tabs + hidden Settings)
 export type MainTabParamList = {
   DiscoverTab: undefined;
-  SearchTab: undefined;
   HomeTab: undefined;
   InsightsTab: undefined;
-  SettingsTab: undefined;
+  SettingsTab: undefined; // hidden from tab bar, accessed via gear icon on Home
 };
 
-// Search funnel stack
-export type SearchStackParamList = {
+// Home stack — home screen + full search flow
+export type HomeStackParamList = {
+  Home: undefined;
   InsurerSelection: undefined;
-  PlanSelection: { selectedInsurers: Insurer[] };
-  DrugSearch: { planIds: number[]; mode: 'single' | 'multi' };
+  PlanSelection: { insurer: Insurer };
+  DrugSearch: { planId: number; planName: string };
   CoverageResult: { planId: number; drugId: number };
   CoverageComparison: { planIds: number[]; drugId: number };
   PriorAuthDetail: { entryId: number; drugName: string; planName: string };
   StepTherapyDetail: { entryId: number; drugName: string; planName: string };
   QuantityLimitDetail: { entryId: number; drugName: string; planName: string; quantityLimitDetail: string | null };
   DrugAlternatives: { drugId: number; planId?: number; drugName: string };
+  DrugFirstSearch: undefined;
 };
+
+// Search funnel stack — kept for type compatibility
+export type SearchStackParamList = Omit<HomeStackParamList, 'Home'>;
 
 // Saved tab stack
 export type SavedStackParamList = {
@@ -43,5 +47,7 @@ export type HistoryStackParamList = {
 export type SettingsStackParamList = {
   Settings: undefined;
   Profile: undefined;
+  Notifications: undefined;
+  DataRetention: undefined;
   AboutLegal: undefined;
 };

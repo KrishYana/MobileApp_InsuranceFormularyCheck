@@ -20,31 +20,22 @@ import { useDrugSearch } from '../../hooks/queries/useDrugSearch';
 import { useDebounce } from '../../hooks/useDebounce';
 import {
   SearchBar,
-  Tabs,
   EmptyState,
   ErrorState,
   LoadingState,
   NeuSurface,
-  NeuInset,
-  Button,
 } from '../../components/primitives';
 import { DrugAutocompleteItem } from '../../components/composites/DrugAutocompleteItem';
 import StateSelectorBar from '../../components/composites/StateSelectorBar';
 
 type Props = NativeStackScreenProps<SearchStackParamList, 'DrugSearch'>;
 
-const SEARCH_TABS = [
-  { id: 'search', label: 'Search' },
-  { id: 'recent', label: 'Recent' },
-];
-
 export default function DrugSearchScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { planIds, mode } = route.params;
+  const { planId, planName } = route.params;
 
   const [query, setQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('search');
   const [formulationDrug, setFormulationDrug] = useState<Drug | null>(null);
   const [formulations, setFormulations] = useState<Drug[]>([]);
 
@@ -60,7 +51,9 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
 
   // Group drugs by base name to detect multiple formulations
   const groupedResults = useMemo(() => {
-    if (!searchResults) return [];
+    if (!searchResults || !Array.isArray(searchResults) || searchResults.length === 0) {
+      return { unique: [] as Drug[], groups: new Map<string, Drug[]>() };
+    }
 
     const groups = new Map<string, Drug[]>();
     for (const drug of searchResults) {
@@ -70,8 +63,6 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
       groups.set(baseName, existing);
     }
 
-    // Return unique drugs for display. If a base name has multiple formulations,
-    // we'll show the formulation picker when tapped.
     const unique: Drug[] = [];
     const seen = new Set<string>();
     for (const drug of searchResults) {
@@ -86,17 +77,17 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
 
   const handleDrugSelect = useCallback(
     (drug: Drug) => {
-      if (!searchResults) return;
+      if (!searchResults || !Array.isArray(searchResults)) return;
 
       const baseName = drug.genericName ?? drug.drugName;
       const variants = groupedResults.groups?.get(baseName) ?? [drug];
 
       if (variants.length > 1) {
-        // Multiple formulations — show picker
+        // Multiple formulations -- show picker
         setFormulationDrug(drug);
         setFormulations(variants);
       } else {
-        // Single formulation — go straight to results
+        // Single formulation -- go straight to results
         navigateToResults(drug);
       }
     },
@@ -107,23 +98,15 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
     (drug: Drug) => {
       setFormulationDrug(null);
       setFormulations([]);
-
-      if (mode === 'single' && planIds.length === 1) {
-        navigation.navigate('CoverageResult', {
-          planId: planIds[0],
-          drugId: drug.drugId,
-        });
-      } else {
-        navigation.navigate('CoverageComparison', {
-          planIds,
-          drugId: drug.drugId,
-        });
-      }
+      navigation.navigate('CoverageResult', {
+        planId,
+        drugId: drug.drugId,
+      });
     },
-    [mode, planIds, navigation],
+    [planId, navigation],
   );
 
-  const showResults = activeTab === 'search' && debouncedQuery.length >= 2;
+  const showResults = debouncedQuery.length >= 2;
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.surface, paddingTop: insets.top }}>
@@ -135,96 +118,79 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
         <Text style={{ ...Typography.title1, color: theme.textPrimary }}>
           Search Drug
         </Text>
-        <Text style={{ ...Typography.caption, color: theme.textSecondary, marginTop: Spacing.xs }}>
-          {mode === 'single' ? '1 plan selected' : `${planIds.length} plans selected`}
+        <Text
+          style={{ ...Typography.caption, color: theme.textSecondary, marginTop: Spacing.xs }}
+          numberOfLines={1}>
+          {planName}
         </Text>
       </View>
 
-      {/* Tabs */}
-      <View style={{ paddingHorizontal: Spacing.xl, marginBottom: Spacing.lg }}>
-        <Tabs tabs={SEARCH_TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* Search bar -- auto-focused */}
+      <View style={{ paddingHorizontal: Spacing.xl, marginBottom: Spacing.md }}>
+        <SearchBar
+          placeholder="Search by drug name, generic, or class..."
+          value={query}
+          onChangeText={setQuery}
+          onClear={() => setQuery('')}
+          autoFocus
+        />
       </View>
-
-      {/* Search bar — auto-focused */}
-      {activeTab === 'search' && (
-        <View style={{ paddingHorizontal: Spacing.xl, marginBottom: Spacing.md }}>
-          <SearchBar
-            placeholder="Search by drug name, generic, or class..."
-            value={query}
-            onChangeText={setQuery}
-            onClear={() => setQuery('')}
-            autoFocus
-          />
-        </View>
-      )}
 
       {/* Content */}
       <View style={{ flex: 1 }}>
-        {activeTab === 'search' && (
-          <>
-            {/* Prompt */}
-            {!showResults && !searching && (
-              <EmptyState
-                icon="💊"
-                headline="Start typing a drug name"
-                description="Search by brand name, generic name, or drug class. Minimum 2 characters."
-              />
-            )}
-
-            {/* Loading */}
-            {showResults && searching && (
-              <LoadingState variant="skeleton" rows={5} layout="list" />
-            )}
-
-            {/* Error */}
-            {showResults && searchError && (
-              <View style={{ padding: Spacing.xl }}>
-                <ErrorState
-                  variant="card"
-                  title={(error as any)?.displayMessage ?? 'Search unavailable'}
-                  description="Check your connection and try again."
-                  onRetry={() => refetch()}
-                />
-              </View>
-            )}
-
-            {/* No results */}
-            {showResults && !searching && !searchError && groupedResults.unique?.length === 0 && (
-              <EmptyState
-                icon="🔍"
-                headline={`No drugs matching "${debouncedQuery}"`}
-                description="Check the spelling, or try searching by generic name."
-              />
-            )}
-
-            {/* Results */}
-            {showResults && !searching && !searchError && groupedResults.unique && groupedResults.unique.length > 0 && (
-              <FlatList
-                data={groupedResults.unique.slice(0, 10)}
-                keyExtractor={(item) => String(item.drugId)}
-                contentContainerStyle={{
-                  paddingHorizontal: Spacing.xl,
-                  paddingBottom: 40,
-                }}
-                ItemSeparatorComponent={() => <View style={{ height: Spacing.md }} />}
-                keyboardShouldPersistTaps="handled"
-                renderItem={({ item }) => (
-                  <DrugAutocompleteItem
-                    drug={item}
-                    searchQuery={debouncedQuery}
-                    onPress={handleDrugSelect}
-                  />
-                )}
-              />
-            )}
-          </>
+        {/* Prompt */}
+        {!showResults && !searching && (
+          <EmptyState
+            icon={'\uD83D\uDC8A'}
+            headline="Start typing a drug name"
+            description="Search by brand name, generic name, or drug class. Minimum 2 characters."
+          />
         )}
 
-        {activeTab === 'recent' && (
+        {/* Loading */}
+        {showResults && searching && (
+          <LoadingState variant="skeleton" rows={5} layout="list" />
+        )}
+
+        {/* Error */}
+        {showResults && searchError && (
+          <View style={{ padding: Spacing.xl }}>
+            <ErrorState
+              variant="card"
+              title={(error as any)?.displayMessage ?? 'Search unavailable'}
+              description="Check your connection and try again."
+              onRetry={() => refetch()}
+            />
+          </View>
+        )}
+
+        {/* No results */}
+        {showResults && !searching && !searchError && groupedResults.unique.length === 0 && (
           <EmptyState
-            icon="🕐"
-            headline="No recent searches"
-            description="Your recently searched drugs will appear here."
+            icon={'\uD83D\uDD0D'}
+            headline={`No drugs matching "${debouncedQuery}"`}
+            description="Check the spelling, or try searching by generic name."
+          />
+        )}
+
+        {/* Results */}
+        {showResults && !searching && !searchError && groupedResults.unique.length > 0 && (
+          <FlatList
+            data={groupedResults.unique.slice(0, 20)}
+            keyExtractor={(item) => String(item.drugId)}
+            contentContainerStyle={{
+              paddingHorizontal: Spacing.xl,
+              paddingBottom: 40,
+            }}
+            ItemSeparatorComponent={() => <View style={{ height: Spacing.md }} />}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => (
+              <DrugAutocompleteItem
+                drug={item}
+                searchQuery={debouncedQuery}
+                onPress={handleDrugSelect}
+              />
+            )}
           />
         )}
       </View>
@@ -280,7 +246,7 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
                     {item.drugName}
                   </Text>
                   <Text style={{ ...Typography.caption, color: theme.textSecondary, marginTop: Spacing.xs }}>
-                    {[item.strength, item.doseForm, item.route].filter(Boolean).join(' · ')}
+                    {[item.strength, item.doseForm, item.route].filter(Boolean).join(' \u00B7 ')}
                   </Text>
                 </Pressable>
               </NeuSurface>

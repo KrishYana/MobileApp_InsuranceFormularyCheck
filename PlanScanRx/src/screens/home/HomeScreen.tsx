@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, Text, ScrollView, StatusBar } from 'react-native';
+import { View, Text, Pressable, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { HomeStackParamList } from '../../navigation/types';
+import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { MainTabParamList } from '../../navigation/types';
 import StateSelectorBar from '../../components/composites/StateSelectorBar';
@@ -10,42 +13,72 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
 import {
-  Button,
   NeuSurface,
-  NeuInset,
   NeuIconWell,
-  EmptyState,
+  ExpandableSection,
 } from '../../components/primitives';
+
+type HomeNav = CompositeNavigationProp<
+  NativeStackNavigationProp<HomeStackParamList, 'Home'>,
+  BottomTabNavigationProp<MainTabParamList>
+>;
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
-  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
+  const navigation = useNavigation<HomeNav>();
 
   const handleNewLookup = () => {
-    navigation.navigate('SearchTab');
+    navigation.navigate('InsurerSelection');
+  };
+
+  const handleSettingsPress = () => {
+    navigation.navigate('SettingsTab');
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.surface, paddingTop: insets.top }}>
       <StatusBar barStyle="dark-content" backgroundColor={theme.surface} />
-      <StateSelectorBar />
 
-      <ScrollView
-        contentContainerStyle={{ paddingHorizontal: Spacing.xl, paddingBottom: 100 }}>
+      {/* Header row: State selector (left) + Settings gear (right) */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingRight: Spacing.xl,
+          paddingVertical: Spacing.sm,
+        }}>
+        <View style={{ flex: 1 }}>
+          <StateSelectorBar compact />
+        </View>
 
-        {/* Hero / CTA */}
-        <View style={{ alignItems: 'center', paddingTop: Spacing.xxxl, paddingBottom: Spacing.xxl }}>
-          <NeuIconWell icon="💊" size={72} />
-          <Text
-            style={{
-              ...Typography.title1,
-              color: theme.textPrimary,
-              marginTop: Spacing.xxl,
-              marginBottom: Spacing.sm,
-            }}>
-            PlanScanRx
-          </Text>
+        {/* Settings gear */}
+        <Pressable
+          onPress={handleSettingsPress}
+          hitSlop={12}
+          accessibilityLabel="Settings"
+          accessibilityRole="button"
+          style={({ pressed }) => ({
+            opacity: pressed ? 0.7 : 1,
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: `${theme.accent}15`,
+            justifyContent: 'center',
+            alignItems: 'center',
+          })}>
+          <Text style={{ fontSize: 20 }}>{'\u2699\uFE0F'}</Text>
+        </Pressable>
+      </View>
+
+      {/* Hero CTA */}
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          paddingHorizontal: Spacing.xl,
+        }}>
+        <View style={{ alignItems: 'center', marginBottom: Spacing.huge }}>
           <Text
             style={{
               ...Typography.body,
@@ -53,58 +86,72 @@ export default function HomeScreen() {
               textAlign: 'center',
               marginBottom: Spacing.xxl,
             }}>
-            Check drug formulary coverage across insurance plans
+            Check drug coverage across plans
           </Text>
-          <Button
-            variant="primary"
-            size="lg"
-            label="New Formulary Lookup"
+
+          <Pressable
             onPress={handleNewLookup}
-            fullWidth
-          />
-        </View>
-
-        {/* Recent Searches section */}
-        <View style={{ marginBottom: Spacing.xxl }}>
-          <Text style={{ ...Typography.title3, color: theme.textPrimary, marginBottom: Spacing.lg }}>
-            Recent Searches
-          </Text>
-          <NeuInset level="insetSmall" cornerRadius={Radius.base}>
-            <View
+            style={({ pressed }) => ({
+              width: '100%',
+              paddingVertical: Spacing.xxxl,
+              paddingHorizontal: Spacing.xxl,
+              alignItems: 'center',
+              borderRadius: Radius.container,
+              backgroundColor: `${theme.accent}18`,
+              borderWidth: 1.5,
+              borderColor: `${theme.accent}30`,
+              transform: [{ scale: pressed ? 0.97 : 1 }],
+            })}
+            accessibilityRole="button"
+            accessibilityLabel="New Formulary Lookup">
+            <NeuIconWell size={56}>
+              <Text style={{ fontSize: 26 }}>{'\uD83D\uDC8A'}</Text>
+            </NeuIconWell>
+            <Text
               style={{
-                padding: Spacing.xxl,
-                borderRadius: Radius.base,
-                backgroundColor: theme.surface,
-                alignItems: 'center',
+                ...Typography.title2,
+                color: theme.textPrimary,
+                marginTop: Spacing.xl,
               }}>
-              <Text style={{ ...Typography.body, color: theme.textSecondary, textAlign: 'center' }}>
-                Your recent searches will appear here
-              </Text>
-            </View>
-          </NeuInset>
-        </View>
-
-        {/* Saved Lookups section */}
-        <View style={{ marginBottom: Spacing.xxl }}>
-          <Text style={{ ...Typography.title3, color: theme.textPrimary, marginBottom: Spacing.lg }}>
-            Saved Lookups
-          </Text>
-          <NeuInset level="insetSmall" cornerRadius={Radius.base}>
-            <View
+              New Formulary Lookup
+            </Text>
+            <Text
               style={{
-                padding: Spacing.xxl,
-                borderRadius: Radius.base,
-                backgroundColor: theme.surface,
-                alignItems: 'center',
+                ...Typography.caption,
+                color: theme.textSecondary,
+                marginTop: Spacing.xs,
               }}>
-              <Text style={{ ...Typography.body, color: theme.textSecondary, textAlign: 'center' }}>
-                Save drug+plan combinations for quick access
-              </Text>
-            </View>
-          </NeuInset>
+              Insurer {'\u2192'} Plan {'\u2192'} Drug {'\u2192'} Coverage
+            </Text>
+          </Pressable>
         </View>
+      </View>
 
-      </ScrollView>
+      {/* Saved Lookups — collapsed by default */}
+      <View style={{ paddingHorizontal: Spacing.xl, paddingBottom: insets.bottom + 100 }}>
+        <NeuSurface level="extrudedSmall" cornerRadius={Radius.base}>
+          <View style={{ paddingHorizontal: Spacing.lg, paddingTop: Spacing.xs }}>
+            <ExpandableSection
+              title="Saved Lookups"
+              defaultExpanded={false}>
+              <View
+                style={{
+                  paddingVertical: Spacing.lg,
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    ...Typography.caption,
+                    color: theme.textSecondary,
+                    textAlign: 'center',
+                  }}>
+                  Save drug+plan combinations for quick access
+                </Text>
+              </View>
+            </ExpandableSection>
+          </View>
+        </NeuSurface>
+      </View>
     </View>
   );
 }

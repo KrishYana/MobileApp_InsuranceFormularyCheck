@@ -4,8 +4,8 @@ import { formularyService } from '../../api/services/formulary.service';
 
 export function usePlans(insurerId: number | null, stateCode: string | null) {
   return useQuery({
-    queryKey: queryKeys.plans.byInsurer(insurerId!, stateCode!),
-    queryFn: () => formularyService.getPlans(insurerId!, stateCode!),
-    enabled: !!insurerId && !!stateCode,
+    queryKey: queryKeys.plans.byInsurer(insurerId!, stateCode ?? 'national'),
+    queryFn: () => formularyService.getPlans(insurerId!, stateCode ?? ''),
+    enabled: !!insurerId,
   });
 }
