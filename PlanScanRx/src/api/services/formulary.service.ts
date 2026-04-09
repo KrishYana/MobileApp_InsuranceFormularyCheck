@@ -1,9 +1,9 @@
 import { apiClient } from '../client';
-import type { Insurer, Plan, Drug, FormularyEntry, DrugAlternative, PriorAuthCriteria, Article } from '../../types/domain';
+import type { StateSectionedInsurers, Plan, Drug, FormularyEntry, DrugAlternative, PriorAuthCriteria, Article, InsightsSummary, InsightsTrends } from '../../types/domain';
 
 export const formularyService = {
-  // Insurers — returned pre-sorted by popularity from backend
-  getInsurers: (stateCode: string): Promise<Insurer[]> =>
+  // Insurers — returned pre-sectioned into local/national from backend
+  getInsurers: (stateCode: string): Promise<StateSectionedInsurers> =>
     apiClient.get(`/states/${stateCode}/insurers`).then((r) => r.data?.data ?? r.data),
 
   // Plans by insurer (state is optional for national/Medicare plans)
@@ -42,4 +42,11 @@ export const formularyService = {
   // Discover feed
   getArticles: (): Promise<Article[]> =>
     apiClient.get('/discover/articles').then((r) => r.data?.data ?? r.data),
+
+  // Insights
+  getInsightsSummary: (): Promise<InsightsSummary> =>
+    apiClient.get('/insights/summary').then((r) => r.data?.data ?? r.data),
+
+  getInsightsTrends: (): Promise<InsightsTrends> =>
+    apiClient.get('/insights/trends').then((r) => r.data?.data ?? r.data),
 };
