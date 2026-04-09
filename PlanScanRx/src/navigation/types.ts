@@ -20,8 +20,8 @@ export type HomeStackParamList = {
   InsurerSelection: undefined;
   PlanSelection: { insurer: Insurer };
   DrugSearch: { planId: number; planName: string };
-  CoverageResult: { planId: number; drugId: number };
-  CoverageComparison: { planIds: number[]; drugId: number };
+  CoverageResult: { planId: number; drugId: number; drugName?: string };
+  CoverageComparison: { planIds: number[]; drugId: number; drugName?: string };
   PriorAuthDetail: { entryId: number; drugName: string; planName: string };
   StepTherapyDetail: { entryId: number; drugName: string; planName: string };
   QuantityLimitDetail: { entryId: number; drugName: string; planName: string; quantityLimitDetail: string | null };

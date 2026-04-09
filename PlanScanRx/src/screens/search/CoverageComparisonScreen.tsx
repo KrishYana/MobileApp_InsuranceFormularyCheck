@@ -23,7 +23,7 @@ type Props = NativeStackScreenProps<SearchStackParamList, 'CoverageComparison'>;
 export default function CoverageComparisonScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { planIds, drugId } = route.params;
+  const { planIds, drugId, drugName } = route.params;
 
   const planBasket = useAppStore((s) => s.planBasket);
   const { data: entries, isLoading, isError, error, refetch } = useCoverageMulti(planIds, drugId);
@@ -143,6 +143,7 @@ export default function CoverageComparisonScreen({ navigation, route }: Props) {
               navigation.navigate('CoverageResult', {
                 planId: item.planId,
                 drugId,
+                drugName,
               })
             }
           />

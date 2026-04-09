@@ -29,13 +29,13 @@ type Props = NativeStackScreenProps<SearchStackParamList, 'CoverageResult'>;
 export default function CoverageResultScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { planId, drugId } = route.params;
+  const { planId, drugId, drugName } = route.params;
 
   const planBasket = useAppStore((s) => s.planBasket);
   const { data: entry, isLoading, isError, error, refetch } = useCoverage(planId, drugId);
 
   const resolvedPlanName = planBasket.find((p) => p.planId === planId)?.planName || `Plan #${planId}`;
-  const resolvedDrugName = entry?.drugId ? (entry as any).drugName || `Drug #${drugId}` : 'this drug';
+  const resolvedDrugName = drugName || `Drug #${drugId}`;
 
   const handleViewAlternatives = () => {
     navigation.navigate('DrugAlternatives', {

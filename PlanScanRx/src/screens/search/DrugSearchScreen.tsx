@@ -114,15 +114,18 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
 
       if (activePlans.length === 0) return;
 
+      const drugName = drug.drugName;
       if (activePlans.length > 1) {
         navigation.navigate('CoverageComparison', {
           planIds: activePlans.map((p) => p.planId),
           drugId: drug.drugId,
+          drugName,
         });
       } else {
         navigation.navigate('CoverageResult', {
           planId: activePlans[0].planId,
           drugId: drug.drugId,
+          drugName,
         });
       }
     },
