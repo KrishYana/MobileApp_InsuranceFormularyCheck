@@ -5,7 +5,6 @@ import type { MainTabParamList } from './types';
 import { useTheme } from '../theme/ThemeProvider';
 import { Typography } from '../theme/typography';
 import { Spacing } from '../theme/spacing';
-import { NeuShadows } from '../theme/shadows';
 import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import HomeStack from './HomeStack';
 import SettingsStack from './SettingsStack';
@@ -39,54 +38,12 @@ export default function MainTabNavigator() {
       initialRouteName="HomeTab"
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: theme.surface,
-          borderTopWidth: 0,
-          paddingTop: Spacing.sm,
-          height: 85,
-          ...NeuShadows.extrudedSmall.light,
-        },
-        tabBarActiveTintColor: theme.accent,
-        tabBarInactiveTintColor: theme.textSecondary,
-        tabBarLabelStyle: {
-          ...Typography.badge,
-          marginTop: 2,
-        },
+        tabBarStyle: { display: 'none' },
       }}>
-      <Tab.Screen
-        name="DiscoverTab"
-        component={DiscoverScreen}
-        options={{
-          tabBarLabel: 'Discover',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>{'\uD83D\uDCF0'}</Text>,
-        }}
-      />
-      <Tab.Screen
-        name="HomeTab"
-        component={HomeStack}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>{'\uD83C\uDFE0'}</Text>,
-        }}
-      />
-      <Tab.Screen
-        name="InsightsTab"
-        component={InsightsScreen}
-        options={{
-          tabBarLabel: 'Insights',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>{'\uD83D\uDCCA'}</Text>,
-        }}
-      />
-      {/* Settings: hidden from tab bar, accessed via gear icon on Home screen */}
-      <Tab.Screen
-        name="SettingsTab"
-        component={SettingsStack}
-        options={{
-          tabBarItemStyle: { display: 'none' },
-          tabBarLabel: 'Settings',
-          tabBarIcon: () => null,
-        }}
-      />
+      <Tab.Screen name="HomeTab" component={HomeStack} />
+      <Tab.Screen name="DiscoverTab" component={DiscoverScreen} />
+      <Tab.Screen name="InsightsTab" component={InsightsScreen} />
+      <Tab.Screen name="SettingsTab" component={SettingsStack} />
     </Tab.Navigator>
   );
 }

@@ -8,3 +8,4 @@ export { TierDisplay } from './TierDisplay';
 export { CostDisplay } from './CostDisplay';
 export { ComparisonRow } from './ComparisonRow';
 export { SettingsRow } from './SettingsRow';
+export { ArticleCard } from './ArticleCard';
