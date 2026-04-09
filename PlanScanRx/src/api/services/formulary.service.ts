@@ -1,5 +1,5 @@
 import { apiClient } from '../client';
-import type { Insurer, Plan, Drug, FormularyEntry, DrugAlternative, PriorAuthCriteria, Article } from '../../types/domain';
+import type { Insurer, Plan, Drug, FormularyEntry, DrugAlternative, PriorAuthCriteria, Article, InsightsSummary, InsightsTrends } from '../../types/domain';
 
 export const formularyService = {
   // Insurers — returned pre-sorted by popularity from backend
@@ -42,4 +42,11 @@ export const formularyService = {
   // Discover feed
   getArticles: (): Promise<Article[]> =>
     apiClient.get('/discover/articles').then((r) => r.data?.data ?? r.data),
+
+  // Insights
+  getInsightsSummary: (): Promise<InsightsSummary> =>
+    apiClient.get('/insights/summary').then((r) => r.data?.data ?? r.data),
+
+  getInsightsTrends: (): Promise<InsightsTrends> =>
+    apiClient.get('/insights/trends').then((r) => r.data?.data ?? r.data),
 };

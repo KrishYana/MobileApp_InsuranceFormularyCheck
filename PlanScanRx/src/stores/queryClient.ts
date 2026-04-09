@@ -51,4 +51,8 @@ export const queryKeys = {
   articles: {
     all: ['articles'] as const,
   },
+  insights: {
+    summary: () => ['insights', 'summary'] as const,
+    trends: () => ['insights', 'trends'] as const,
+  },
 } as const;
