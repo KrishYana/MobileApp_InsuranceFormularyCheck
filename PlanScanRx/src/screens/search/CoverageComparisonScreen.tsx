@@ -7,6 +7,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
+import { useAppStore } from '../../stores/appStore';
 import { useCoverageMulti } from '../../hooks/queries/useCoverageMulti';
 import {
   EmptyState,
@@ -24,7 +25,13 @@ export default function CoverageComparisonScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const { planIds, drugId } = route.params;
 
+  const planBasket = useAppStore((s) => s.planBasket);
   const { data: entries, isLoading, isError, error, refetch } = useCoverageMulti(planIds, drugId);
+
+  const getPlanName = (id: number) => {
+    const plan = planBasket.find((p) => p.planId === id);
+    return plan?.planName || `Plan #${id}`;
+  };
 
   const summary = useMemo(() => {
     if (!entries) return null;
@@ -131,7 +138,7 @@ export default function CoverageComparisonScreen({ navigation, route }: Props) {
         renderItem={({ item }) => (
           <ComparisonRow
             entry={item}
-            planName={`Plan #${item.planId}`}
+            planName={getPlanName(item.planId)}
             onPress={() =>
               navigation.navigate('CoverageResult', {
                 planId: item.planId,

@@ -7,6 +7,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
+import { useAppStore } from '../../stores/appStore';
 import { useCoverage } from '../../hooks/queries/useCoverage';
 import {
   Button,
@@ -30,13 +31,17 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const { planId, drugId } = route.params;
 
+  const planBasket = useAppStore((s) => s.planBasket);
   const { data: entry, isLoading, isError, error, refetch } = useCoverage(planId, drugId);
+
+  const resolvedPlanName = planBasket.find((p) => p.planId === planId)?.planName || `Plan #${planId}`;
+  const resolvedDrugName = entry?.drugId ? (entry as any).drugName || `Drug #${drugId}` : 'this drug';
 
   const handleViewAlternatives = () => {
     navigation.navigate('DrugAlternatives', {
       drugId,
       planId,
-      drugName: entry?.drugId ? `Drug #${drugId}` : 'this drug',
+      drugName: resolvedDrugName,
     });
   };
 
@@ -45,7 +50,7 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
     const status = entry.isCovered ? 'COVERED' : 'NOT COVERED';
     const tier = entry.tierName ? ` — ${entry.tierName}` : '';
     await Share.share({
-      message: `PlanScanRx: Drug #${drugId} is ${status}${tier} on Plan #${planId}.`,
+      message: `PlanScanRx: ${resolvedDrugName} is ${status}${tier} on ${resolvedPlanName}.`,
     });
   };
 
@@ -234,8 +239,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
               label="View Prior Auth Details"
               onPress={() => navigation.navigate('PriorAuthDetail', {
                 entryId: entry.entryId,
-                drugName: `Drug #${drugId}`,
-                planName: `Plan #${planId}`,
+                drugName: resolvedDrugName,
+                planName: resolvedPlanName,
               })}
               fullWidth
             />
@@ -247,8 +252,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
               label="View Step Therapy Details"
               onPress={() => navigation.navigate('StepTherapyDetail', {
                 entryId: entry.entryId,
-                drugName: `Drug #${drugId}`,
-                planName: `Plan #${planId}`,
+                drugName: resolvedDrugName,
+                planName: resolvedPlanName,
               })}
               fullWidth
             />
@@ -260,8 +265,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
               label="View Quantity Limit Details"
               onPress={() => navigation.navigate('QuantityLimitDetail', {
                 entryId: entry.entryId,
-                drugName: `Drug #${drugId}`,
-                planName: `Plan #${planId}`,
+                drugName: resolvedDrugName,
+                planName: resolvedPlanName,
                 quantityLimitDetail: entry.quantityLimitDetail,
               })}
               fullWidth
