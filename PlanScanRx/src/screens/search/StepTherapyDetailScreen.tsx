@@ -16,6 +16,7 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
+  AppIcon,
 } from '../../components/primitives';
 
 type Props = NativeStackScreenProps<SearchStackParamList, 'StepTherapyDetail'>;
@@ -108,13 +109,16 @@ export default function StepTherapyDetailScreen({ navigation, route }: Props) {
                     backgroundColor: theme.surface,
                     gap: Spacing.sm,
                   }}>
-                  <Text style={{ ...Typography.body, color: theme.textAccent }}>{'← Back'}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                  <AppIcon name="back" size={16} color={theme.textAccent} />
+                  <Text style={{ ...Typography.body, color: theme.textAccent }}>Back</Text>
+                </View>
                 </View>
               </NeuSurface>
             </Pressable>
           </View>
           <EmptyState
-            icon="💊"
+            icon="pill"
             headline="Step therapy required"
             description={`Specific prerequisite medications are not identified in our data. Contact ${planName} for step therapy requirements.`}
           />
@@ -146,7 +150,10 @@ export default function StepTherapyDetailScreen({ navigation, route }: Props) {
                   backgroundColor: theme.surface,
                   gap: Spacing.sm,
                 }}>
-                <Text style={{ ...Typography.body, color: theme.textAccent }}>{'← Back'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                  <AppIcon name="back" size={16} color={theme.textAccent} />
+                  <Text style={{ ...Typography.body, color: theme.textAccent }}>Back</Text>
+                </View>
               </View>
             </NeuSurface>
           </Pressable>
@@ -196,7 +203,7 @@ export default function StepTherapyDetailScreen({ navigation, route }: Props) {
                     borderLeftColor: theme.statusStepTherapy,
                     gap: Spacing.md,
                   }}>
-                  <NeuIconWell icon="💊" size={40} iconColor={theme.statusStepTherapy} />
+                  <NeuIconWell icon="pill" size={40} iconColor={theme.statusStepTherapy} />
                   <Text style={{ ...Typography.bodyMedium, color: theme.textPrimary, flex: 1 }}>
                     {drugNameItem}
                   </Text>

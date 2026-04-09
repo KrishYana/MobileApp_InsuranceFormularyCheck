@@ -15,7 +15,7 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
 import { TouchTarget } from '../../theme/touchTarget';
-import { Button, NeuSurface, NeuIconWell } from '../primitives';
+import { Button, NeuSurface, NeuIconWell, AppIcon } from '../primitives';
 
 type GuestGateProps = {
   feature: string;
@@ -69,7 +69,7 @@ export function GuestGate({ feature, children }: GuestGateProps) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{ fontSize: 12 }}>🔒</Text>
+            <AppIcon name="lock" size={12} color={theme.accent} />
           </View>
         </NeuSurface>
       </Pressable>
@@ -95,7 +95,7 @@ export function GuestGate({ feature, children }: GuestGateProps) {
               paddingBottom: insets.bottom + Spacing.xl,
               alignItems: 'center',
             }}>
-            <NeuIconWell icon="🔐" size={56} />
+            <NeuIconWell icon="lock" size={56} />
 
             <Text
               style={{

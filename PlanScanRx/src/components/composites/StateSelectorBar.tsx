@@ -15,7 +15,7 @@ import { TouchTarget } from '../../theme/touchTarget';
 import { US_STATES } from '../../constants/states';
 import type { USState } from '../../types/auth';
 import { useAppStore } from '../../stores/appStore';
-import { NeuSurface, NeuInset, SearchBar } from '../primitives';
+import { NeuSurface, NeuInset, SearchBar, AppIcon } from '../primitives';
 
 export default function StateSelectorBar({ compact = false }: { compact?: boolean }) {
   const { theme } = useTheme();
@@ -64,7 +64,7 @@ export default function StateSelectorBar({ compact = false }: { compact?: boolea
       <Text style={{ ...Typography.bodyMedium, color: theme.textAccent }}>
         {selectedState ? selectedState.name : 'Select your state'}
       </Text>
-      <Text style={{ fontSize: 10, color: theme.textAccent }}>{'\u25BC'}</Text>
+      <AppIcon name="expand" size={10} color={theme.textAccent} />
     </Pressable>
   );
 
@@ -141,13 +141,17 @@ export default function StateSelectorBar({ compact = false }: { compact?: boolea
                   <Text style={{ ...Typography.body, color: theme.textPrimary }}>
                     {item.name}
                   </Text>
-                  <Text
-                    style={{
-                      ...Typography.label,
-                      color: isSelected ? theme.accent : theme.textSecondary,
-                    }}>
-                    {isSelected ? '✓' : item.code}
-                  </Text>
+                  {isSelected ? (
+                    <AppIcon name="check" size={18} color={theme.accent} />
+                  ) : (
+                    <Text
+                      style={{
+                        ...Typography.label,
+                        color: theme.textSecondary,
+                      }}>
+                      {item.code}
+                    </Text>
+                  )}
                 </Pressable>
               );
 

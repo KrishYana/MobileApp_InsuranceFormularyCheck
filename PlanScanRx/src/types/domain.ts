@@ -25,6 +25,12 @@ export type Insurer = {
   planCount?: number;
 };
 
+export type StateSectionedInsurers = {
+  stateCode: string;
+  localInsurers: Insurer[];
+  nationalInsurers: Insurer[];
+};
+
 export type Plan = {
   planId: number;
   insurerId: number;
@@ -115,6 +121,41 @@ export type PlanFilters = {
   marketType: string | null;
   metalLevel: string | null;
   planYear: number | null;
+};
+
+// Insights types
+
+export type TopDrug = {
+  drugName: string;
+  searchCount: number;
+};
+
+export type TopInsurer = {
+  insurerName: string;
+  count: number;
+};
+
+export type TopPlan = {
+  planName: string;
+  count: number;
+};
+
+export type InsightsSummary = {
+  totalLookups: number;
+  coverageSuccessRate: number;
+  topDrugs: TopDrug[];
+  topInsurers: TopInsurer[];
+  topPlans: TopPlan[];
+};
+
+export type TrendPoint = {
+  date: string;
+  lookupCount: number;
+};
+
+export type InsightsTrends = {
+  period: string;
+  dataPoints: TrendPoint[];
 };
 
 export type Article = {

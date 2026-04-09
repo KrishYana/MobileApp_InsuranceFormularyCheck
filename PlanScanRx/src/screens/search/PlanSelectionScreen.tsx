@@ -114,7 +114,7 @@ export default function PlanSelectionScreen({ navigation, route }: Props) {
     if (!plans || !Array.isArray(plans) || plans.length === 0) {
       return (
         <EmptyState
-          icon={'\uD83D\uDCCB'}
+          icon="clipboard"
           headline={`No plans found for ${insurer.insurerName}`}
           description="This insurer may not have plans loaded yet. Try a different insurer."
         />
@@ -124,7 +124,7 @@ export default function PlanSelectionScreen({ navigation, route }: Props) {
     if (debouncedSearch && filteredPlans.length === 0) {
       return (
         <EmptyState
-          icon={'\uD83D\uDD0D'}
+          icon="search"
           headline={`No plans matching "${debouncedSearch}"`}
           description="Check the spelling or try a different search."
           ctaLabel="Clear search"

@@ -7,6 +7,7 @@ import { Radius } from '../../theme/radius';
 import { TouchTarget } from '../../theme/touchTarget';
 import { NeuSurface } from './NeuSurface';
 import { NeuInset } from './NeuInset';
+import { AppIcon } from './Icon';
 
 type PickerOption = { value: string; label: string; disabled?: boolean };
 
@@ -112,7 +113,7 @@ export function Picker({
                     {item.label}
                   </Text>
                   {isSelected && (
-                    <Text style={{ color: theme.accent, fontSize: 18 }}>✓</Text>
+                    <AppIcon name="check" size={18} color={theme.accent} />
                   )}
                 </Pressable>
               );

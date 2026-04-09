@@ -20,6 +20,7 @@ import {
   ErrorState,
   LoadingState,
   ExpandableSection,
+  AppIcon,
 } from '../../components/primitives';
 
 type Props = NativeStackScreenProps<SearchStackParamList, 'DrugAlternatives'>;
@@ -164,13 +165,16 @@ export default function DrugAlternativesScreen({ navigation, route }: Props) {
                     backgroundColor: theme.surface,
                     gap: Spacing.sm,
                   }}>
-                  <Text style={{ ...Typography.body, color: theme.textAccent }}>{'← Back'}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                    <AppIcon name="back" size={16} color={theme.textAccent} />
+                    <Text style={{ ...Typography.body, color: theme.textAccent }}>Back</Text>
+                  </View>
                 </View>
               </NeuSurface>
             </Pressable>
           </View>
           <EmptyState
-            icon="💊"
+            icon="pill"
             headline="No known alternatives"
             description={`We don't have alternative drug data for ${drugName} in our database.`}
           />
@@ -202,7 +206,10 @@ export default function DrugAlternativesScreen({ navigation, route }: Props) {
                   backgroundColor: theme.surface,
                   gap: Spacing.sm,
                 }}>
-                <Text style={{ ...Typography.body, color: theme.textAccent }}>{'← Back'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                  <AppIcon name="back" size={16} color={theme.textAccent} />
+                  <Text style={{ ...Typography.body, color: theme.textAccent }}>Back</Text>
+                </View>
               </View>
             </NeuSurface>
           </Pressable>

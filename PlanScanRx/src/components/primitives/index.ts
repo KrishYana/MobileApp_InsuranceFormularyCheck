@@ -2,6 +2,7 @@
 export { NeuSurface } from './NeuSurface';
 export { NeuInset } from './NeuInset';
 export { NeuIconWell } from './NeuIconWell';
+export { AppIcon, AppIcons } from './Icon';
 
 // Core primitives
 export { Button } from './Button';

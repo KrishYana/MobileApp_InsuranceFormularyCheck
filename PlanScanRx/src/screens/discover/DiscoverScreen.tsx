@@ -44,7 +44,7 @@ export default function DiscoverScreen() {
     if (!articles || articles.length === 0) {
       return (
         <EmptyState
-          icon={'\uD83D\uDCF0'}
+          icon="news"
           headline="No articles yet"
           description="Medical news and research articles will appear here once ingested."
         />

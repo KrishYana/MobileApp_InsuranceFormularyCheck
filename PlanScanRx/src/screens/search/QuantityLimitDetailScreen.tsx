@@ -12,6 +12,7 @@ import {
   NeuInset,
   NeuIconWell,
   EmptyState,
+  AppIcon,
 } from '../../components/primitives';
 
 type Props = NativeStackScreenProps<SearchStackParamList, 'QuantityLimitDetail'>;
@@ -44,7 +45,10 @@ export default function QuantityLimitDetailScreen({ navigation, route }: Props) 
                   backgroundColor: theme.surface,
                   gap: Spacing.sm,
                 }}>
-                <Text style={{ ...Typography.body, color: theme.textAccent }}>{'← Back'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                  <AppIcon name="back" size={16} color={theme.textAccent} />
+                  <Text style={{ ...Typography.body, color: theme.textAccent }}>Back</Text>
+                </View>
               </View>
             </NeuSurface>
           </Pressable>
@@ -77,7 +81,7 @@ export default function QuantityLimitDetailScreen({ navigation, route }: Props) 
                     borderLeftColor: theme.statusQuantityLimit,
                   }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing.lg }}>
-                    <NeuIconWell icon="⏱" size={48} iconColor={theme.statusQuantityLimit} />
+                    <NeuIconWell icon="timer" size={48} iconColor={theme.statusQuantityLimit} />
                     <Text style={{ ...Typography.title3, color: theme.textPrimary, flex: 1 }}>
                       Quantity Limit
                     </Text>
@@ -113,7 +117,7 @@ export default function QuantityLimitDetailScreen({ navigation, route }: Props) 
         ) : (
           <View style={{ marginTop: Spacing.xxl }}>
             <EmptyState
-              icon="📋"
+              icon="clipboard"
               headline="Quantity limit applies"
               description={`A quantity limit is applied to ${drugName} on this plan, but specific details are not available in our data. Contact ${planName} for details.`}
             />

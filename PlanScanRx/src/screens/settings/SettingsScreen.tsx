@@ -158,7 +158,7 @@ export default function SettingsScreen({ navigation }: Props) {
             <NeuSurface level="extruded" cornerRadius={Radius.container}>
               <View style={{ paddingVertical: Spacing.sm }}>
                 <SettingsRow
-                  icon={'\uD83D\uDC64'}
+                  icon="person"
                   label={user.displayName || 'Profile'}
                   description={user.email}
                   onPress={() => navigation.navigate('Profile')}
@@ -174,14 +174,14 @@ export default function SettingsScreen({ navigation }: Props) {
             <ThemeSelector />
             <Separator color={theme.shadowDark} />
             <SettingsRow
-              icon={'\uD83D\uDD14'}
+              icon="notification"
               label="Notifications"
               description="Push alerts & reminders"
               onPress={() => navigation.navigate('Notifications')}
             />
             <Separator color={theme.shadowDark} />
             <SettingsRow
-              icon={'\uD83D\uDCBE'}
+              icon="save"
               label="Data & Storage"
               description="History & saved lookups retention"
               onPress={() => navigation.navigate('DataRetention')}
@@ -194,7 +194,7 @@ export default function SettingsScreen({ navigation }: Props) {
           <NeuSurface level="extruded" cornerRadius={Radius.container}>
             <View style={{ paddingVertical: Spacing.sm }}>
               <SettingsRow
-                icon={'\u2139\uFE0F'}
+                icon="info"
                 label="About & Legal"
                 description="Version, terms, privacy"
                 onPress={() => navigation.navigate('AboutLegal')}

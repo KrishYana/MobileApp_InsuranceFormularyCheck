@@ -63,7 +63,7 @@ export default function CoverageComparisonScreen({ navigation, route }: Props) {
       <View style={{ flex: 1, backgroundColor: theme.surface, paddingTop: insets.top }}>
         <StatusBar barStyle="dark-content" backgroundColor={theme.surface} />
         <StateSelectorBar />
-        <EmptyState icon="📊" headline="No coverage data available" description="Formulary data is not available for the selected plans." />
+        <EmptyState icon="chart" headline="No coverage data available" description="Formulary data is not available for the selected plans." />
       </View>
     );
   }

@@ -5,9 +5,11 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { TouchTarget } from '../../theme/touchTarget';
 import { NeuIconWell } from '../primitives';
+import { AppIcon } from '../primitives/Icon';
+import type { AppIcons } from '../primitives/Icon';
 
 type SettingsRowProps = {
-  icon: string;
+  icon: keyof typeof AppIcons;
   label: string;
   description?: string;
   onPress?: () => void;
@@ -40,9 +42,7 @@ export function SettingsRow({
         paddingHorizontal: Spacing.lg,
         opacity: pressed ? 0.7 : disabled ? 0.5 : 1,
       })}>
-      <NeuIconWell size={40}>
-        <Text style={{ fontSize: 20 }}>{icon}</Text>
-      </NeuIconWell>
+      <NeuIconWell icon={icon} size={40} />
 
       <View style={{ flex: 1, marginLeft: Spacing.lg }}>
         <Text style={{ ...Typography.bodyMedium, color: theme.textPrimary }}>
@@ -63,14 +63,7 @@ export function SettingsRow({
       {rightContent}
 
       {hasChevron && !rightContent && (
-        <Text
-          style={{
-            ...Typography.body,
-            color: theme.textSecondary,
-            marginLeft: Spacing.sm,
-          }}>
-          {'\u203A'}
-        </Text>
+        <AppIcon name="chevronRight" size={18} color={theme.textSecondary} />
       )}
     </Pressable>
   );
