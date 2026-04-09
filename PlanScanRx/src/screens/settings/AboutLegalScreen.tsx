@@ -7,7 +7,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
-import { NeuSurface, NeuIconWell } from '../../components/primitives';
+import { NeuSurface, NeuIconWell, AppIcon } from '../../components/primitives';
 import { SettingsRow } from '../../components/composites/SettingsRow';
 import { useToast } from '../../context/ToastContext';
 
@@ -46,9 +46,10 @@ export default function AboutLegalScreen({ navigation }: Props) {
           paddingVertical: Spacing.lg,
         }}>
         <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={{ ...Typography.body, color: theme.accent }}>
-            {'\u2039'} Settings
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+            <AppIcon name="back" size={16} color={theme.accent} />
+            <Text style={{ ...Typography.body, color: theme.accent }}>Settings</Text>
+          </View>
         </Pressable>
       </View>
 
@@ -60,9 +61,7 @@ export default function AboutLegalScreen({ navigation }: Props) {
         {/* App Info */}
         <NeuSurface level="extruded" cornerRadius={Radius.container}>
           <View style={{ alignItems: 'center', paddingVertical: Spacing.xxxl }}>
-            <NeuIconWell size={64}>
-              <Text style={{ fontSize: 32 }}>{'\uD83D\uDC8A'}</Text>
-            </NeuIconWell>
+            <NeuIconWell icon="pill" size={64} />
             <Text
               style={{
                 ...Typography.title2,
@@ -87,19 +86,19 @@ export default function AboutLegalScreen({ navigation }: Props) {
           <NeuSurface level="extruded" cornerRadius={Radius.container}>
             <View style={{ paddingVertical: Spacing.sm }}>
               <SettingsRow
-                icon={'\uD83D\uDCC4'}
+                icon="document"
                 label="Terms of Service"
                 onPress={() => handleStub('Terms of Service')}
               />
               <Separator color={theme.shadowDark} />
               <SettingsRow
-                icon={'\uD83D\uDD12'}
+                icon="lock"
                 label="Privacy Policy"
                 onPress={() => handleStub('Privacy Policy')}
               />
               <Separator color={theme.shadowDark} />
               <SettingsRow
-                icon={'\uD83D\uDCDC'}
+                icon="document"
                 label="Open Source Licenses"
                 onPress={() => handleStub('Open Source Licenses')}
               />

@@ -7,7 +7,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
-import { NeuSurface, NeuInset, Button } from '../../components/primitives';
+import { NeuSurface, NeuInset, Button, AppIcon } from '../../components/primitives';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useToast } from '../../context/ToastContext';
 
@@ -128,9 +128,10 @@ export default function DataRetentionScreen({ navigation }: Props) {
           paddingVertical: Spacing.lg,
         }}>
         <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={{ ...Typography.body, color: theme.accent }}>
-            {'\u2039'} Settings
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+            <AppIcon name="back" size={16} color={theme.accent} />
+            <Text style={{ ...Typography.body, color: theme.accent }}>Settings</Text>
+          </View>
         </Pressable>
       </View>
 
