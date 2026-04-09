@@ -6,7 +6,7 @@ import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
 import { Animation } from '../../theme/animation';
 import { TouchTarget } from '../../theme/touchTarget';
-import { NeuSurface, NeuInset } from '../primitives';
+import { NeuSurface, NeuInset, AppIcon } from '../primitives';
 
 type InsurerCardProps = {
   name: string;
@@ -59,7 +59,7 @@ export function InsurerCard({ name, selected, onPress, disabled = false }: Insur
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{ color: theme.textInverse, fontSize: 14, fontWeight: '700' }}>✓</Text>
+          <AppIcon name="check" size={14} color={theme.textInverse} />
         </View>
       )}
     </Pressable>

@@ -18,56 +18,58 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
+  AppIcon,
 } from '../../components/primitives';
+import type { AppIcons } from '../../components/primitives/Icon';
 
 type Props = NativeStackScreenProps<SearchStackParamList, 'PriorAuthDetail'>;
 
 type CriteriaConfig = {
-  icon: string;
+  icon: keyof typeof AppIcons;
   color: (t: ThemeTokens) => string;
   label: string;
 };
 
 const CRITERIA_CONFIG: Record<string, CriteriaConfig> = {
   AGE: {
-    icon: '🎂',
+    icon: 'cake',
     color: (t) => t.statusPriorAuth,
     label: 'Age Requirement',
   },
   GENDER: {
-    icon: '⚕',
+    icon: 'gender',
     color: (t) => t.statusSpecialty,
     label: 'Gender Restriction',
   },
   DIAGNOSIS: {
-    icon: '🏥',
+    icon: 'hospital',
     color: (t) => t.statusStepTherapy,
     label: 'Required Diagnoses',
   },
   PRIOR_MEDICATION: {
-    icon: '💊',
+    icon: 'pill',
     color: (t) => t.statusStepTherapy,
     label: 'Prior Medication',
   },
   LAB_RESULT: {
-    icon: '🔬',
+    icon: 'flask',
     color: (t) => t.info,
     label: 'Lab Results',
   },
   PROVIDER_TYPE: {
-    icon: '👨‍⚕',
+    icon: 'doctor',
     color: (t) => t.statusSpecialty,
     label: 'Provider Requirement',
   },
   QUANTITY: {
-    icon: '⏱',
+    icon: 'timer',
     color: (t) => t.statusQuantityLimit,
     label: 'Quantity Requirement',
   },
 };
 
 const DEFAULT_CONFIG: CriteriaConfig = {
-  icon: '📋',
+  icon: 'clipboard',
   color: (t) => t.statusPriorAuth,
   label: 'Requirement',
 };
@@ -269,13 +271,16 @@ export default function PriorAuthDetailScreen({ navigation, route }: Props) {
                     backgroundColor: theme.surface,
                     gap: Spacing.sm,
                   }}>
-                  <Text style={{ ...Typography.body, color: theme.textAccent }}>{'← Back'}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                    <AppIcon name="back" size={16} color={theme.textAccent} />
+                    <Text style={{ ...Typography.body, color: theme.textAccent }}>Back</Text>
+                  </View>
                 </View>
               </NeuSurface>
             </Pressable>
           </View>
           <EmptyState
-            icon="📋"
+            icon="clipboard"
             headline="Prior authorization required"
             description={`Detailed criteria are not available for this drug. Contact ${planName} for PA requirements.`}
           />

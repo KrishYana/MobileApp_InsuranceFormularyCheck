@@ -4,6 +4,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { TouchTarget } from '../../theme/touchTarget';
+import { AppIcon } from './Icon';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -43,14 +44,13 @@ export function ExpandableSection({
         accessibilityRole="button"
         accessibilityState={{ expanded }}>
         <Text style={{ ...Typography.title3, color: theme.textPrimary }}>{title}</Text>
-        <Text
-          style={{
-            fontSize: 12,
-            color: theme.textSecondary,
-            marginLeft: Spacing.sm,
-          }}>
-          {expanded ? '\u25BC' : '\u25B6'}
-        </Text>
+        <View style={{ marginLeft: Spacing.sm }}>
+          <AppIcon
+            name={expanded ? 'expand' : 'chevronRight'}
+            size={14}
+            color={theme.textSecondary}
+          />
+        </View>
         {rightContent && <View style={{ marginLeft: 'auto' }}>{rightContent}</View>}
       </Pressable>
       {expanded && <View style={{ paddingBottom: Spacing.lg }}>{children}</View>}

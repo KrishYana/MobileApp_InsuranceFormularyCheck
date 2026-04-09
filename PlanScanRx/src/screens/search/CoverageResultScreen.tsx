@@ -16,6 +16,7 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
+  AppIcon,
 } from '../../components/primitives';
 import { RestrictionBadgeRow } from '../../components/composites/RestrictionBadgeRow';
 import { TierDisplay } from '../../components/composites/TierDisplay';
@@ -106,7 +107,7 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
 
   const statusColor = isCovered ? theme.statusCovered : theme.statusNotCovered;
   const statusBg = isCovered ? theme.statusCoveredBg : theme.statusNotCoveredBg;
-  const statusIcon = isCovered ? '✓' : '✗';
+  const statusIconName = isCovered ? 'check' : 'close' as const;
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.surface, paddingTop: insets.top }}>
@@ -138,7 +139,7 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={{ fontSize: 22, color: statusColor, fontWeight: '700' }}>{statusIcon}</Text>
+                <AppIcon name={statusIconName} size={22} color={statusColor} />
               </View>
               <Text style={{ ...Typography.title2, color: statusColor, flex: 1 }}>
                 {statusText}

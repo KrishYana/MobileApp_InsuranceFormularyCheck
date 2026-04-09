@@ -3,6 +3,7 @@ import { View, Text, Animated, StatusBar, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../navigation/types';
 import { useTheme } from '../theme/ThemeProvider';
+import { AppIcon } from '../components/primitives/Icon';
 import { Typography } from '../theme/typography';
 import { queryClient } from '../stores/queryClient';
 import { queryKeys } from '../stores/queryClient';
@@ -170,7 +171,7 @@ export default function SplashScreen({ navigation }: Props) {
               shadowRadius: 12,
             },
           ]}>
-          <Text style={styles.logoEmoji}>{'\uD83D\uDC8A'}</Text>
+          <AppIcon name="pill" size={44} color={theme.accent} />
         </View>
       </Animated.View>
 
@@ -221,8 +222,5 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  logoEmoji: {
-    fontSize: 44,
   },
 });

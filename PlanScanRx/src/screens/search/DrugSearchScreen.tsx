@@ -141,7 +141,7 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
         {/* Prompt */}
         {!showResults && !searching && (
           <EmptyState
-            icon={'\uD83D\uDC8A'}
+            icon="pill"
             headline="Start typing a drug name"
             description="Search by brand name, generic name, or drug class. Minimum 2 characters."
           />
@@ -167,7 +167,7 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
         {/* No results */}
         {showResults && !searching && !searchError && groupedResults.unique.length === 0 && (
           <EmptyState
-            icon={'\uD83D\uDD0D'}
+            icon="search"
             headline={`No drugs matching "${debouncedQuery}"`}
             description="Check the spelling, or try searching by generic name."
           />

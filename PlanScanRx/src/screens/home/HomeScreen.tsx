@@ -16,6 +16,7 @@ import { Radius } from '../../theme/radius';
 import {
   NeuSurface,
   ExpandableSection,
+  AppIcon,
 } from '../../components/primitives';
 import { useArticles } from '../../hooks/queries/useArticles';
 
@@ -78,7 +79,7 @@ export default function HomeScreen() {
             justifyContent: 'center',
             alignItems: 'center',
           })}>
-          <Text style={{ fontSize: 20 }}>{'\u2699\uFE0F'}</Text>
+          <AppIcon name="settings" size={20} color={theme.accent} />
         </Pressable>
       </View>
 
@@ -106,7 +107,7 @@ export default function HomeScreen() {
           })}
           accessibilityRole="button"
           accessibilityLabel="New Formulary Lookup">
-          <Text style={{ fontSize: 36 }}>{'\uD83D\uDC8A'}</Text>
+          <AppIcon name="pill" size={36} color={theme.accent} />
           <Text
             style={{
               ...Typography.title2,
@@ -160,7 +161,7 @@ export default function HomeScreen() {
           })}
           accessibilityRole="button"
           accessibilityLabel="View Insights">
-          <Text style={{ fontSize: 36 }}>{'\uD83D\uDCCA'}</Text>
+          <AppIcon name="chart" size={36} color={theme.teal} />
           <Text
             style={{
               ...Typography.title2,
@@ -171,7 +172,7 @@ export default function HomeScreen() {
           </Text>
         </Pressable>
 
-        {/* 4. Saved Lookups — collapsed */}
+        {/* 4. Saved Lookups -- collapsed */}
         <View style={{ marginTop: Spacing.xxxl }}>
           <NeuSurface level="extrudedSmall" cornerRadius={Radius.base}>
             <View style={{ paddingHorizontal: Spacing.lg, paddingTop: Spacing.xs }}>
