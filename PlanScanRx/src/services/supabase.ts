@@ -1,10 +1,7 @@
 import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
-import Config from 'react-native-config';
-
-const SUPABASE_URL = Config.SUPABASE_URL;
-const SUPABASE_ANON_KEY = Config.SUPABASE_ANON_KEY;
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@env';
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error(

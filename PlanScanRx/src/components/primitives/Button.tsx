@@ -98,10 +98,14 @@ export function Button({
   // Tertiary buttons have no shadow (they're text links)
   if (isTertiary) return content;
 
-  // Wrap in neumorphic surface for raised effect
+  // Secondary uses subtler shadow to differentiate from primary/destructive CTAs
+  const isSecondary = variant === 'secondary';
+  const restLevel = isSecondary ? 'extrudedSmall' : 'extruded';
+  const pressedLevel = 'extrudedSmall';
+
   return (
     <NeuSurface
-      level={pressed ? 'extrudedSmall' : 'extruded'}
+      level={pressed ? pressedLevel : restLevel}
       cornerRadius={Radius.base}
       style={fullWidth ? { width: '100%' } : undefined}>
       {content}

@@ -35,6 +35,10 @@ export type Plan = {
   metalLevel: string | null;
   planYear: number;
   isActive: boolean;
+  // Additional Medicare-specific fields (may be present from backend)
+  contract_id?: string | null;
+  plan_id?: string | null;
+  segment_id?: string | null;
 };
 
 export type FormularyEntry = {
@@ -111,4 +115,15 @@ export type PlanFilters = {
   marketType: string | null;
   metalLevel: string | null;
   planYear: number | null;
+};
+
+export type Article = {
+  articleId: number;
+  title: string;
+  summary: string | null;
+  sourceName: string;
+  sourceUrl: string;
+  publishedAt: string;
+  drugClasses: string[];
+  imageUrl: string | null;
 };

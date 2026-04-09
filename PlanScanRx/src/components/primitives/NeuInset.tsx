@@ -14,7 +14,8 @@ type NeuInsetProps = {
 
 /**
  * Neumorphic inset (carved-in) effect for text fields, icon wells, pressed states.
- * Simulates inner shadows using border + opacity overlays since RN has no inset shadow.
+ * Simulates inner shadows using semi-transparent gradient overlays positioned
+ * at top-left (dark) and bottom-right (light) to create a soft recessed look.
  */
 export function NeuInset({
   children,
@@ -26,6 +27,9 @@ export function NeuInset({
   const { theme } = useTheme();
   const config = NeuInsets[level];
 
+  // The overlay thickness determines how deep the inset looks
+  const thickness = config.offset + config.blur * 0.3;
+
   return (
     <View
       style={[
@@ -36,36 +40,81 @@ export function NeuInset({
         },
         style,
       ]}>
-      {/* Dark inner shadow (top-left) */}
+      {/* Dark shadow overlay — top and left edges (light source from top-left) */}
       <View
         style={{
           position: 'absolute',
-          top: -config.offset,
-          left: -config.offset,
-          right: config.offset,
-          bottom: config.offset,
-          borderRadius: cornerRadius,
-          borderWidth: config.offset,
-          borderColor: theme.shadowDark,
-          opacity: config.darkOpacity,
+          top: 0,
+          left: 0,
+          right: 0,
+          height: thickness,
+          borderTopLeftRadius: cornerRadius,
+          borderTopRightRadius: cornerRadius,
+          backgroundColor: theme.shadowDark,
+          opacity: config.darkOpacity * 0.35,
         }}
         pointerEvents="none"
       />
-      {/* Light inner shadow (bottom-right) */}
       <View
         style={{
           position: 'absolute',
-          top: config.offset,
-          left: config.offset,
-          right: -config.offset,
-          bottom: -config.offset,
-          borderRadius: cornerRadius,
-          borderWidth: config.offset,
-          borderColor: theme.shadowLight,
-          opacity: config.lightOpacity,
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: thickness,
+          borderTopLeftRadius: cornerRadius,
+          borderBottomLeftRadius: cornerRadius,
+          backgroundColor: theme.shadowDark,
+          opacity: config.darkOpacity * 0.25,
         }}
         pointerEvents="none"
       />
+
+      {/* Light shadow overlay — bottom and right edges */}
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: thickness,
+          borderBottomLeftRadius: cornerRadius,
+          borderBottomRightRadius: cornerRadius,
+          backgroundColor: theme.shadowLight,
+          opacity: config.lightOpacity * 0.4,
+        }}
+        pointerEvents="none"
+      />
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: thickness,
+          borderTopRightRadius: cornerRadius,
+          borderBottomRightRadius: cornerRadius,
+          backgroundColor: theme.shadowLight,
+          opacity: config.lightOpacity * 0.3,
+        }}
+        pointerEvents="none"
+      />
+
+      {/* Subtle overall darkening to enhance the "recessed" feel */}
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          borderRadius: cornerRadius,
+          backgroundColor: theme.shadowDark,
+          opacity: config.darkOpacity * 0.08,
+        }}
+        pointerEvents="none"
+      />
+
       {/* Focus ring */}
       {focused && (
         <View

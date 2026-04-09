@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,30 +12,28 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
 import { TouchTarget } from '../../theme/touchTarget';
-import { saveSelectedState, getSelectedState } from '../../services/storage';
 import { US_STATES } from '../../constants/states';
 import type { USState } from '../../types/auth';
+import { useAppStore } from '../../stores/appStore';
 import { NeuSurface, NeuInset, SearchBar } from '../primitives';
 
-export default function StateSelectorBar() {
+export default function StateSelectorBar({ compact = false }: { compact?: boolean }) {
   const { theme } = useTheme();
-  const [selectedState, setSelectedState] = useState<USState | null>(null);
+  const selectedState = useAppStore((s) => s.selectedState);
+  const setSelectedState = useAppStore((s) => s.setSelectedState);
+  const hasHydrated = useAppStore.persist.hasHydrated();
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    getSelectedState().then((state) => {
-      if (state) setSelectedState(state);
-      else setModalVisible(true);
-    });
-  }, []);
+    if (hasHydrated && !selectedState) setModalVisible(true);
+  }, [hasHydrated, selectedState]);
 
-  const handleSelect = useCallback(async (state: USState) => {
+  const handleSelect = useCallback((state: USState) => {
     setSelectedState(state);
-    await saveSelectedState(state);
     setModalVisible(false);
     setSearch('');
-  }, []);
+  }, [setSelectedState]);
 
   const filteredStates = search
     ? US_STATES.filter(
@@ -45,33 +43,40 @@ export default function StateSelectorBar() {
       )
     : US_STATES;
 
+  const selectorContent = (
+    <Pressable
+      onPress={() => setModalVisible(true)}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: compact ? 'flex-start' : 'center',
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.xl,
+        gap: Spacing.sm,
+        backgroundColor: theme.surface,
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={
+        selectedState
+          ? `Selected state: ${selectedState.name}. Tap to change.`
+          : 'Select your state'
+      }>
+      <Text style={{ ...Typography.bodyMedium, color: theme.textAccent }}>
+        {selectedState ? selectedState.name : 'Select your state'}
+      </Text>
+      <Text style={{ fontSize: 10, color: theme.textAccent }}>{'\u25BC'}</Text>
+    </Pressable>
+  );
+
   return (
     <>
-      {/* Persistent selector bar — inset into the surface */}
-      <NeuInset level="insetSmall" cornerRadius={0}>
-        <Pressable
-          onPress={() => setModalVisible(true)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: Spacing.md,
-            paddingHorizontal: Spacing.xl,
-            gap: Spacing.sm,
-            backgroundColor: theme.surface,
-          }}
-          accessibilityRole="button"
-          accessibilityLabel={
-            selectedState
-              ? `Selected state: ${selectedState.name}. Tap to change.`
-              : 'Select your state'
-          }>
-          <Text style={{ ...Typography.bodyMedium, color: theme.textAccent }}>
-            {selectedState ? selectedState.name : 'Select your state'}
-          </Text>
-          <Text style={{ fontSize: 10, color: theme.textAccent }}>▼</Text>
-        </Pressable>
-      </NeuInset>
+      {compact ? (
+        selectorContent
+      ) : (
+        <NeuInset level="insetSmall" cornerRadius={0}>
+          {selectorContent}
+        </NeuInset>
+      )}
 
       {/* State picker modal */}
       <Modal
