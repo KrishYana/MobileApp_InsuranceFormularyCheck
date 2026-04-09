@@ -5,9 +5,10 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { NeuIconWell } from './NeuIconWell';
 import { Button } from './Button';
+import type { AppIcons } from './Icon';
 
 type EmptyStateProps = {
-  icon?: string;
+  icon?: keyof typeof AppIcons;
   headline: string;
   description?: string;
   ctaLabel?: string;

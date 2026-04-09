@@ -5,6 +5,7 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
 import { NeuInset } from './NeuInset';
+import { AppIcon } from './Icon';
 
 type SearchBarProps = {
   placeholder: string;
@@ -42,7 +43,7 @@ export function SearchBar({
             paddingHorizontal: Spacing.lg,
             gap: Spacing.sm,
           }}>
-          <Text style={{ fontSize: 16, color: theme.textSecondary }}>🔍</Text>
+          <AppIcon name="search" size={16} color={theme.textSecondary} />
           <TextInput
             style={{
               flex: 1,
@@ -65,7 +66,7 @@ export function SearchBar({
           />
           {value.length > 0 && (
             <Pressable onPress={onClear} hitSlop={8} accessibilityLabel="Clear search">
-              <Text style={{ fontSize: 16, color: theme.textSecondary }}>✕</Text>
+              <AppIcon name="close" size={16} color={theme.textSecondary} />
             </Pressable>
           )}
         </View>

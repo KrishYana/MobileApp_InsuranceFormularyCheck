@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,30 +12,28 @@ import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
 import { TouchTarget } from '../../theme/touchTarget';
-import { saveSelectedState, getSelectedState } from '../../services/storage';
 import { US_STATES } from '../../constants/states';
 import type { USState } from '../../types/auth';
-import { NeuSurface, NeuInset, SearchBar } from '../primitives';
+import { useAppStore } from '../../stores/appStore';
+import { NeuSurface, NeuInset, SearchBar, AppIcon } from '../primitives';
 
-export default function StateSelectorBar() {
+export default function StateSelectorBar({ compact = false }: { compact?: boolean }) {
   const { theme } = useTheme();
-  const [selectedState, setSelectedState] = useState<USState | null>(null);
+  const selectedState = useAppStore((s) => s.selectedState);
+  const setSelectedState = useAppStore((s) => s.setSelectedState);
+  const hasHydrated = useAppStore.persist.hasHydrated();
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    getSelectedState().then((state) => {
-      if (state) setSelectedState(state);
-      else setModalVisible(true);
-    });
-  }, []);
+    if (hasHydrated && !selectedState) setModalVisible(true);
+  }, [hasHydrated, selectedState]);
 
-  const handleSelect = useCallback(async (state: USState) => {
+  const handleSelect = useCallback((state: USState) => {
     setSelectedState(state);
-    await saveSelectedState(state);
     setModalVisible(false);
     setSearch('');
-  }, []);
+  }, [setSelectedState]);
 
   const filteredStates = search
     ? US_STATES.filter(
@@ -45,33 +43,40 @@ export default function StateSelectorBar() {
       )
     : US_STATES;
 
+  const selectorContent = (
+    <Pressable
+      onPress={() => setModalVisible(true)}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: compact ? 'flex-start' : 'center',
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.xl,
+        gap: Spacing.sm,
+        backgroundColor: theme.surface,
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={
+        selectedState
+          ? `Selected state: ${selectedState.name}. Tap to change.`
+          : 'Select your state'
+      }>
+      <Text style={{ ...Typography.bodyMedium, color: theme.textAccent }}>
+        {selectedState ? selectedState.name : 'Select your state'}
+      </Text>
+      <AppIcon name="expand" size={10} color={theme.textAccent} />
+    </Pressable>
+  );
+
   return (
     <>
-      {/* Persistent selector bar — inset into the surface */}
-      <NeuInset level="insetSmall" cornerRadius={0}>
-        <Pressable
-          onPress={() => setModalVisible(true)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: Spacing.md,
-            paddingHorizontal: Spacing.xl,
-            gap: Spacing.sm,
-            backgroundColor: theme.surface,
-          }}
-          accessibilityRole="button"
-          accessibilityLabel={
-            selectedState
-              ? `Selected state: ${selectedState.name}. Tap to change.`
-              : 'Select your state'
-          }>
-          <Text style={{ ...Typography.bodyMedium, color: theme.textAccent }}>
-            {selectedState ? selectedState.name : 'Select your state'}
-          </Text>
-          <Text style={{ fontSize: 10, color: theme.textAccent }}>▼</Text>
-        </Pressable>
-      </NeuInset>
+      {compact ? (
+        selectorContent
+      ) : (
+        <NeuInset level="insetSmall" cornerRadius={0}>
+          {selectorContent}
+        </NeuInset>
+      )}
 
       {/* State picker modal */}
       <Modal
@@ -136,13 +141,17 @@ export default function StateSelectorBar() {
                   <Text style={{ ...Typography.body, color: theme.textPrimary }}>
                     {item.name}
                   </Text>
-                  <Text
-                    style={{
-                      ...Typography.label,
-                      color: isSelected ? theme.accent : theme.textSecondary,
-                    }}>
-                    {isSelected ? '✓' : item.code}
-                  </Text>
+                  {isSelected ? (
+                    <AppIcon name="check" size={18} color={theme.accent} />
+                  ) : (
+                    <Text
+                      style={{
+                        ...Typography.label,
+                        color: theme.textSecondary,
+                      }}>
+                      {item.code}
+                    </Text>
+                  )}
                 </Pressable>
               );
 

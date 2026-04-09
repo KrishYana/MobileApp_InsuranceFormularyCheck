@@ -8,6 +8,7 @@ import {
   type ReturnKeyTypeOptions,
 } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
+import { AppIcon } from './Icon';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
@@ -102,7 +103,7 @@ export function TextInput({
               onPress={() => onChangeText('')}
               hitSlop={8}
               accessibilityLabel="Clear input">
-              <Text style={{ ...Typography.body, color: theme.textSecondary }}>✕</Text>
+              <AppIcon name="close" size={16} color={theme.textSecondary} />
             </Pressable>
           )}
         </View>

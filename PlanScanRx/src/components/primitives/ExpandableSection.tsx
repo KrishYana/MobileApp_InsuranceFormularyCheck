@@ -4,6 +4,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { TouchTarget } from '../../theme/touchTarget';
+import { AppIcon } from './Icon';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -37,19 +38,20 @@ export function ExpandableSection({
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
           minHeight: TouchTarget.minimum,
           paddingVertical: Spacing.md,
         }}
         accessibilityRole="button"
         accessibilityState={{ expanded }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, flex: 1 }}>
-          <Text style={{ ...Typography.title3, color: theme.textPrimary }}>{title}</Text>
-          {rightContent}
+        <Text style={{ ...Typography.title3, color: theme.textPrimary }}>{title}</Text>
+        <View style={{ marginLeft: Spacing.sm }}>
+          <AppIcon
+            name={expanded ? 'expand' : 'chevronRight'}
+            size={14}
+            color={theme.textSecondary}
+          />
         </View>
-        <Text style={{ fontSize: 14, color: theme.textSecondary }}>
-          {expanded ? '▲' : '▼'}
-        </Text>
+        {rightContent && <View style={{ marginLeft: 'auto' }}>{rightContent}</View>}
       </Pressable>
       {expanded && <View style={{ paddingBottom: Spacing.lg }}>{children}</View>}
     </View>

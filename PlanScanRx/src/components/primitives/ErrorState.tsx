@@ -71,7 +71,7 @@ export function ErrorState({
       }}
       accessibilityRole="alert">
       <View style={{ marginBottom: Spacing.xxl }}>
-        <NeuIconWell icon="⚠" size={72} iconColor={theme.error} />
+        <NeuIconWell icon="warning" size={72} iconColor={theme.error} />
       </View>
       <Text
         style={{

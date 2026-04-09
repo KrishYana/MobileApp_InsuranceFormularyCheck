@@ -44,6 +44,7 @@ import {
   NeuSurface,
   NeuInset,
   FreshnessIndicator,
+  AppIcon,
 } from '../../components/primitives';
 import { DrugAutocompleteItem } from '../../components/composites/DrugAutocompleteItem';
 import { RestrictionBadgeRow } from '../../components/composites/RestrictionBadgeRow';
@@ -260,9 +261,13 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text style={{ ...Typography.badge, color: textColor, fontSize: 12 }}>
-                    {isCompleted ? '\u2713' : step.number}
-                  </Text>
+                  {isCompleted ? (
+                    <AppIcon name="check" size={14} color={textColor} />
+                  ) : (
+                    <Text style={{ ...Typography.badge, color: textColor, fontSize: 12 }}>
+                      {step.number}
+                    </Text>
+                  )}
                 </View>
                 <Text style={{ ...Typography.badge, color: labelColor }}>
                   {step.label}
@@ -303,7 +308,7 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{ fontSize: 18 }}>{'\uD83D\uDC8A'}</Text>
+            <AppIcon name="pill" size={18} color={theme.accent} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ ...Typography.bodyMedium, color: theme.textPrimary }}>
@@ -352,7 +357,7 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{ fontSize: 18 }}>{'\uD83D\uDCCB'}</Text>
+            <AppIcon name="clipboard" size={18} color={theme.statusStepTherapy} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ ...Typography.bodyMedium, color: theme.textPrimary }} numberOfLines={2}>
@@ -449,8 +454,6 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
       : 'NOT COVERED';
     const statusColor = isCovered ? theme.statusCovered : theme.statusNotCovered;
     const statusBg = isCovered ? theme.statusCoveredBg : theme.statusNotCoveredBg;
-    const statusIcon = isCovered ? '\u2713' : '\u2717';
-
     return (
       <View style={{ gap: Spacing.lg }}>
         {/* Freshness banner */}
@@ -483,9 +486,11 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={{ fontSize: 22, color: statusColor, fontWeight: '700' }}>
-                  {statusIcon}
-                </Text>
+                <AppIcon
+                  name={isCovered ? 'check' : 'close'}
+                  size={22}
+                  color={statusColor}
+                />
               </View>
               <Text style={{ ...Typography.title2, color: statusColor, flex: 1 }}>
                 {statusText}
@@ -650,7 +655,7 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
             {/* Prompt */}
             {!showDrugResults && !searching && (
               <EmptyState
-                icon={'\uD83D\uDC8A'}
+                icon="pill"
                 headline="Start typing a drug name"
                 description="Search by brand name, generic name, or drug class. Minimum 2 characters."
               />
@@ -681,7 +686,7 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
               !searchError &&
               groupedResults.unique.length === 0 && (
                 <EmptyState
-                  icon={'\uD83D\uDD0D'}
+                  icon="search"
                   headline={`No drugs matching "${debouncedQuery}"`}
                   description="Check the spelling, or try searching by generic name."
                 />
@@ -758,7 +763,7 @@ export default function DrugFirstSearchScreen({ navigation }: Props) {
                     gap: Spacing.lg,
                   }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-                    <Text style={{ fontSize: 18 }}>{'\uD83C\uDFE5'}</Text>
+                    <AppIcon name="hospital" size={18} color={theme.accent} />
                     <Text style={{ ...Typography.title3, color: theme.textPrimary }}>
                       Medicare Plan Lookup
                     </Text>

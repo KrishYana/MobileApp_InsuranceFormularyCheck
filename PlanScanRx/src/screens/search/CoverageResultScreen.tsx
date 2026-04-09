@@ -16,7 +16,7 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
-  FreshnessIndicator,
+  AppIcon,
 } from '../../components/primitives';
 import { RestrictionBadgeRow } from '../../components/composites/RestrictionBadgeRow';
 import { TierDisplay } from '../../components/composites/TierDisplay';
@@ -107,7 +107,7 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
 
   const statusColor = isCovered ? theme.statusCovered : theme.statusNotCovered;
   const statusBg = isCovered ? theme.statusCoveredBg : theme.statusNotCoveredBg;
-  const statusIcon = isCovered ? '✓' : '✗';
+  const statusIconName = isCovered ? 'check' : 'close' as const;
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.surface, paddingTop: insets.top }}>
@@ -117,12 +117,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: Spacing.xl, paddingBottom: 100 }}>
 
-        {/* Freshness banner (C3 overlay) */}
-        <View style={{ marginTop: Spacing.lg, marginBottom: Spacing.md }}>
-          <FreshnessIndicator sourceDate={entry.sourceDate} variant="banner" />
-        </View>
-
         {/* Status card */}
+        <View style={{ marginTop: Spacing.lg }} />
         <NeuSurface level="extruded" cornerRadius={Radius.container}>
           <View
             style={{
@@ -143,7 +139,7 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={{ fontSize: 22, color: statusColor, fontWeight: '700' }}>{statusIcon}</Text>
+                <AppIcon name={statusIconName} size={22} color={statusColor} />
               </View>
               <Text style={{ ...Typography.title2, color: statusColor, flex: 1 }}>
                 {statusText}
@@ -289,12 +285,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
           />
         </View>
 
-        {/* Source info */}
-        <View style={{ marginTop: Spacing.xxxl, alignItems: 'center' }}>
-          <Text style={{ ...Typography.caption, color: theme.textSecondary }}>
-            Source: {entry.sourceType} · {entry.sourceDate}
-          </Text>
-        </View>
+        {/* Bottom spacing */}
+        <View style={{ height: Spacing.xxl }} />
       </ScrollView>
     </View>
   );
