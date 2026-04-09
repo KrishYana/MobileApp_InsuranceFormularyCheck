@@ -1,10 +1,18 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+import { supabase } from '../services/supabase';
 import { NetworkError, AuthError, APIError } from '../errors/AppError';
 import { errorLogger } from '../errors/errorLogger';
 
-// TODO: Replace with real backend URL
-const BASE_URL = 'https://api.planscanrx.com/v1';
+const DEV_API_HOST = Platform.select({
+  android: 'http://10.0.2.2:8080',
+  ios: 'http://localhost:8080',
+  default: 'http://localhost:8080',
+});
+
+const BASE_URL = __DEV__
+  ? `${DEV_API_HOST}/v1`
+  : 'https://api.planscanrx.com/v1';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -12,11 +20,13 @@ export const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor: inject auth token
+// Request interceptor: inject Supabase JWT
 apiClient.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem('@planscanrx/auth_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
   } else {
     config.headers['X-Guest-Mode'] = 'true';
   }

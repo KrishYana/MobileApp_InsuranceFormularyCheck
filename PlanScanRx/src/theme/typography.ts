@@ -42,20 +42,20 @@ const bodyFontBold = Platform.select({
 });
 
 export const Typography = {
-  // Display scale (Plus Jakarta Sans)
-  display:   { fontFamily: displayFontExtraBold, fontSize: 40, lineHeight: 48, fontWeight: '800' } as TextStyle,
-  title1:    { fontFamily: displayFont, fontSize: 28, lineHeight: 36, fontWeight: '700' } as TextStyle,
-  title2:    { fontFamily: displayFont, fontSize: 22, lineHeight: 30, fontWeight: '700' } as TextStyle,
-  title3:    { fontFamily: displayFontSemiBold, fontSize: 18, lineHeight: 24, fontWeight: '600' } as TextStyle,
+  // Display scale (Plus Jakarta Sans) — letter-spacing opens up headlines
+  display:   { fontFamily: displayFontExtraBold, fontSize: 40, lineHeight: 48, fontWeight: '800', letterSpacing: 1.0 } as TextStyle,
+  title1:    { fontFamily: displayFont, fontSize: 28, lineHeight: 36, fontWeight: '700', letterSpacing: 0.5 } as TextStyle,
+  title2:    { fontFamily: displayFont, fontSize: 22, lineHeight: 30, fontWeight: '700', letterSpacing: 0.3 } as TextStyle,
+  title3:    { fontFamily: displayFontSemiBold, fontSize: 18, lineHeight: 24, fontWeight: '600', letterSpacing: 0.2 } as TextStyle,
 
   // Body scale (DM Sans)
   body:      { fontFamily: bodyFont, fontSize: 16, lineHeight: 22, fontWeight: '400' } as TextStyle,
   bodyMedium:{ fontFamily: bodyFontMedium, fontSize: 16, lineHeight: 22, fontWeight: '500' } as TextStyle,
   bodyBold:  { fontFamily: bodyFontBold, fontSize: 16, lineHeight: 22, fontWeight: '700' } as TextStyle,
   label:     { fontFamily: bodyFontMedium, fontSize: 14, lineHeight: 18, fontWeight: '500' } as TextStyle,
-  caption:   { fontFamily: bodyFont, fontSize: 13, lineHeight: 18, fontWeight: '400' } as TextStyle,
-  badge:     { fontFamily: bodyFontBold, fontSize: 11, lineHeight: 14, fontWeight: '700' } as TextStyle,
+  caption:   { fontFamily: bodyFont, fontSize: 13, lineHeight: 16, fontWeight: '400' } as TextStyle,
+  badge:     { fontFamily: bodyFontBold, fontSize: 11, lineHeight: 14, fontWeight: '700', letterSpacing: 0.5 } as TextStyle,
 
   // Button (DM Sans Medium for physical button feel)
-  button:    { fontFamily: bodyFontMedium, fontSize: 16, lineHeight: 22, fontWeight: '500' } as TextStyle,
+  button:    { fontFamily: bodyFontMedium, fontSize: 16, lineHeight: 22, fontWeight: '500', letterSpacing: 0.2 } as TextStyle,
 } as const;

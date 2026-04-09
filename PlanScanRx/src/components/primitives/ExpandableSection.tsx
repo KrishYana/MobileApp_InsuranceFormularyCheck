@@ -37,19 +37,21 @@ export function ExpandableSection({
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
           minHeight: TouchTarget.minimum,
           paddingVertical: Spacing.md,
         }}
         accessibilityRole="button"
         accessibilityState={{ expanded }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, flex: 1 }}>
-          <Text style={{ ...Typography.title3, color: theme.textPrimary }}>{title}</Text>
-          {rightContent}
-        </View>
-        <Text style={{ fontSize: 14, color: theme.textSecondary }}>
-          {expanded ? '▲' : '▼'}
+        <Text style={{ ...Typography.title3, color: theme.textPrimary }}>{title}</Text>
+        <Text
+          style={{
+            fontSize: 12,
+            color: theme.textSecondary,
+            marginLeft: Spacing.sm,
+          }}>
+          {expanded ? '\u25BC' : '\u25B6'}
         </Text>
+        {rightContent && <View style={{ marginLeft: 'auto' }}>{rightContent}</View>}
       </Pressable>
       {expanded && <View style={{ paddingBottom: Spacing.lg }}>{children}</View>}
     </View>

@@ -16,7 +16,6 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
-  FreshnessIndicator,
 } from '../../components/primitives';
 import { RestrictionBadgeRow } from '../../components/composites/RestrictionBadgeRow';
 import { TierDisplay } from '../../components/composites/TierDisplay';
@@ -117,12 +116,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: Spacing.xl, paddingBottom: 100 }}>
 
-        {/* Freshness banner (C3 overlay) */}
-        <View style={{ marginTop: Spacing.lg, marginBottom: Spacing.md }}>
-          <FreshnessIndicator sourceDate={entry.sourceDate} variant="banner" />
-        </View>
-
         {/* Status card */}
+        <View style={{ marginTop: Spacing.lg }} />
         <NeuSurface level="extruded" cornerRadius={Radius.container}>
           <View
             style={{
@@ -289,12 +284,8 @@ export default function CoverageResultScreen({ navigation, route }: Props) {
           />
         </View>
 
-        {/* Source info */}
-        <View style={{ marginTop: Spacing.xxxl, alignItems: 'center' }}>
-          <Text style={{ ...Typography.caption, color: theme.textSecondary }}>
-            Source: {entry.sourceType} · {entry.sourceDate}
-          </Text>
-        </View>
+        {/* Bottom spacing */}
+        <View style={{ height: Spacing.xxl }} />
       </ScrollView>
     </View>
   );

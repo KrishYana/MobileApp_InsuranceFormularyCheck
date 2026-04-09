@@ -17,11 +17,11 @@ export const Animation = {
     slow:    500,
   },
 
-  // Press scale values
+  // Press scale values — must be perceptible for the tactile metaphor
   pressScale: {
-    button: 0.97,
-    card:   0.99,
-    chip:   0.95,
+    button: 0.95,
+    card:   0.98,
+    chip:   0.93,
   },
 
   // Shimmer (skeleton loading)
@@ -33,6 +33,6 @@ export const Animation = {
   // Floating (ambient decoration)
   floating: {
     duration: 3000,
-    offset:   6,
+    offset:   10,
   },
 } as const;
