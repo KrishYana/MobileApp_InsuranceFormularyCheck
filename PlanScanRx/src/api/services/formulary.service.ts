@@ -17,8 +17,8 @@ export const formularyService = {
   lookupPlanByHiosId: (hiosId: string): Promise<Plan> =>
     apiClient.get('/plans/lookup/hios', { params: { hios_plan_id: hiosId } }).then((r) => r.data?.data ?? r.data),
 
-  lookupPlanByGroupId: (groupId: string): Promise<Plan> =>
-    apiClient.get('/plans/lookup/group', { params: { group_id: groupId } }).then((r) => r.data?.data ?? r.data),
+  lookupPlanByGroupId: (groupId: string, planId?: string): Promise<Plan> =>
+    apiClient.get('/plans/lookup/group', { params: { group_id: groupId, ...(planId ? { plan_id: planId } : {}) } }).then((r) => r.data?.data ?? r.data),
 
   // Drug search
   searchDrugs: (query: string): Promise<Drug[]> =>

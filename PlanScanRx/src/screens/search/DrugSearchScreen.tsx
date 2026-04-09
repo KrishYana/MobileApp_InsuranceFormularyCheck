@@ -7,6 +7,7 @@ import {
   Pressable,
   SafeAreaView,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -16,6 +17,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Typography } from '../../theme/typography';
 import { Spacing } from '../../theme/spacing';
 import { Radius } from '../../theme/radius';
+import { useAppStore } from '../../stores/appStore';
 import { useDrugSearch } from '../../hooks/queries/useDrugSearch';
 import { useDebounce } from '../../hooks/useDebounce';
 import {
@@ -24,6 +26,8 @@ import {
   ErrorState,
   LoadingState,
   NeuSurface,
+  NeuInset,
+  AppIcon,
 } from '../../components/primitives';
 import { DrugAutocompleteItem } from '../../components/composites/DrugAutocompleteItem';
 import StateSelectorBar from '../../components/composites/StateSelectorBar';
@@ -34,6 +38,14 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const { planId, planName } = route.params;
+
+  // Plan basket
+  const planBasket = useAppStore((s) => s.planBasket);
+  const removeFromBasket = useAppStore((s) => s.removeFromBasket);
+  const clearBasket = useAppStore((s) => s.clearBasket);
+
+  // Use basket if populated, otherwise fall back to route param (single-plan flow)
+  const activePlans = planBasket.length > 0 ? planBasket : [{ planId, planName } as any];
 
   const [query, setQuery] = useState('');
   const [formulationDrug, setFormulationDrug] = useState<Drug | null>(null);
@@ -49,12 +61,10 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
     refetch,
   } = useDrugSearch(debouncedQuery);
 
-  // Group drugs by base name to detect multiple formulations
   const groupedResults = useMemo(() => {
     if (!searchResults || !Array.isArray(searchResults) || searchResults.length === 0) {
       return { unique: [] as Drug[], groups: new Map<string, Drug[]>() };
     }
-
     const groups = new Map<string, Drug[]>();
     for (const drug of searchResults) {
       const baseName = drug.genericName ?? drug.drugName;
@@ -62,7 +72,6 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
       existing.push(drug);
       groups.set(baseName, existing);
     }
-
     const unique: Drug[] = [];
     const seen = new Set<string>();
     for (const drug of searchResults) {
@@ -78,16 +87,12 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
   const handleDrugSelect = useCallback(
     (drug: Drug) => {
       if (!searchResults || !Array.isArray(searchResults)) return;
-
       const baseName = drug.genericName ?? drug.drugName;
       const variants = groupedResults.groups?.get(baseName) ?? [drug];
-
       if (variants.length > 1) {
-        // Multiple formulations -- show picker
         setFormulationDrug(drug);
         setFormulations(variants);
       } else {
-        // Single formulation -- go straight to results
         navigateToResults(drug);
       }
     },
@@ -98,13 +103,32 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
     (drug: Drug) => {
       setFormulationDrug(null);
       setFormulations([]);
-      navigation.navigate('CoverageResult', {
-        planId,
-        drugId: drug.drugId,
-      });
+
+      if (activePlans.length > 1) {
+        // Multiple plans — go to comparison
+        navigation.navigate('CoverageComparison', {
+          planIds: activePlans.map((p) => p.planId),
+          drugId: drug.drugId,
+        });
+      } else {
+        // Single plan — go to result
+        navigation.navigate('CoverageResult', {
+          planId: activePlans[0].planId,
+          drugId: drug.drugId,
+        });
+      }
     },
-    [planId, navigation],
+    [activePlans, navigation],
   );
+
+  const handleNewSession = () => {
+    clearBasket();
+    navigation.popToTop();
+  };
+
+  const handleAddMorePlans = () => {
+    navigation.navigate('InsurerSelection');
+  };
 
   const showResults = debouncedQuery.length >= 2;
 
@@ -113,19 +137,47 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
       <StatusBar barStyle="dark-content" backgroundColor={theme.surface} />
       <StateSelectorBar />
 
-      {/* Header */}
-      <View style={{ paddingHorizontal: Spacing.xl, paddingTop: Spacing.xl, paddingBottom: Spacing.md }}>
-        <Text style={{ ...Typography.title1, color: theme.textPrimary }}>
-          Search Drug
-        </Text>
-        <Text
-          style={{ ...Typography.caption, color: theme.textSecondary, marginTop: Spacing.xs }}
-          numberOfLines={1}>
-          {planName}
-        </Text>
+      {/* Header with New Session button */}
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: Spacing.xl, paddingTop: Spacing.xl, paddingBottom: Spacing.sm }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ ...Typography.title1, color: theme.textPrimary }}>Search Drug</Text>
+        </View>
+        {planBasket.length > 0 && (
+          <Pressable onPress={handleNewSession} hitSlop={8}>
+            <Text style={{ ...Typography.label, color: theme.error }}>New Session</Text>
+          </Pressable>
+        )}
       </View>
 
-      {/* Search bar -- auto-focused */}
+      {/* Plan basket chips */}
+      {activePlans.length > 0 && (
+        <View style={{ paddingHorizontal: Spacing.xl, paddingBottom: Spacing.sm }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: Spacing.sm }}>
+            {activePlans.map((p) => (
+              <NeuInset key={p.planId} level="insetSmall" cornerRadius={Radius.full}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing.xs, paddingLeft: Spacing.md, paddingRight: Spacing.sm, gap: Spacing.xs }}>
+                  <Text style={{ ...Typography.caption, color: theme.textPrimary }} numberOfLines={1}>
+                    {p.planName || `Plan #${p.planId}`}
+                  </Text>
+                  {planBasket.length > 0 && (
+                    <Pressable onPress={() => removeFromBasket(p.planId)} hitSlop={6}>
+                      <AppIcon name="close" size={12} color={theme.textSecondary} />
+                    </Pressable>
+                  )}
+                </View>
+              </NeuInset>
+            ))}
+          </ScrollView>
+          {/* Add more plans link */}
+          <Pressable onPress={handleAddMorePlans} style={{ marginTop: Spacing.sm }}>
+            <Text style={{ ...Typography.caption, color: theme.textAccent }}>
+              + Add more plans
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* Search bar */}
       <View style={{ paddingHorizontal: Spacing.xl, marginBottom: Spacing.md }}>
         <SearchBar
           placeholder="Search by drug name, generic, or class..."
@@ -138,7 +190,6 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
 
       {/* Content */}
       <View style={{ flex: 1 }}>
-        {/* Prompt */}
         {!showResults && !searching && (
           <EmptyState
             icon="pill"
@@ -146,13 +197,9 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
             description="Search by brand name, generic name, or drug class. Minimum 2 characters."
           />
         )}
-
-        {/* Loading */}
         {showResults && searching && (
           <LoadingState variant="skeleton" rows={5} layout="list" />
         )}
-
-        {/* Error */}
         {showResults && searchError && (
           <View style={{ padding: Spacing.xl }}>
             <ErrorState
@@ -163,8 +210,6 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
             />
           </View>
         )}
-
-        {/* No results */}
         {showResults && !searching && !searchError && groupedResults.unique.length === 0 && (
           <EmptyState
             icon="search"
@@ -172,48 +217,30 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
             description="Check the spelling, or try searching by generic name."
           />
         )}
-
-        {/* Results */}
         {showResults && !searching && !searchError && groupedResults.unique.length > 0 && (
           <FlatList
             data={groupedResults.unique.slice(0, 20)}
             keyExtractor={(item) => String(item.drugId)}
-            contentContainerStyle={{
-              paddingHorizontal: Spacing.xl,
-              paddingBottom: 40,
-            }}
+            contentContainerStyle={{ paddingHorizontal: Spacing.xl, paddingBottom: 40 }}
             ItemSeparatorComponent={() => <View style={{ height: Spacing.md }} />}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
-              <DrugAutocompleteItem
-                drug={item}
-                searchQuery={debouncedQuery}
-                onPress={handleDrugSelect}
-              />
+              <DrugAutocompleteItem drug={item} searchQuery={debouncedQuery} onPress={handleDrugSelect} />
             )}
           />
         )}
       </View>
 
-      {/* Formulation picker bottom sheet */}
+      {/* Formulation picker */}
       <Modal
         visible={formulationDrug !== null}
         animationType="slide"
         presentationStyle="pageSheet"
         onRequestClose={() => setFormulationDrug(null)}>
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.surface }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingHorizontal: Spacing.xxl,
-              paddingVertical: Spacing.xl,
-            }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: Spacing.xxl, paddingVertical: Spacing.xl }}>
             <View style={{ flex: 1 }}>
-              <Text style={{ ...Typography.title2, color: theme.textPrimary }}>
-                Select Formulation
-              </Text>
+              <Text style={{ ...Typography.title2, color: theme.textPrimary }}>Select Formulation</Text>
               {formulationDrug && (
                 <Text style={{ ...Typography.caption, color: theme.textSecondary, marginTop: Spacing.xs }}>
                   {formulationDrug.genericName ?? formulationDrug.drugName}
@@ -224,7 +251,6 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
               <Text style={{ ...Typography.bodyBold, color: theme.textAccent }}>Cancel</Text>
             </Pressable>
           </View>
-
           <FlatList
             data={formulations}
             keyExtractor={(item) => String(item.drugId)}
@@ -234,17 +260,10 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
               <NeuSurface level="extrudedSmall" cornerRadius={Radius.base}>
                 <Pressable
                   onPress={() => navigateToResults(item)}
-                  style={{
-                    paddingVertical: Spacing.lg,
-                    paddingHorizontal: Spacing.xl,
-                    borderRadius: Radius.base,
-                    backgroundColor: theme.surface,
-                  }}
+                  style={{ paddingVertical: Spacing.lg, paddingHorizontal: Spacing.xl, borderRadius: Radius.base, backgroundColor: theme.surface }}
                   accessibilityRole="button"
                   accessibilityLabel={`${item.drugName} ${item.strength ?? ''} ${item.doseForm ?? ''}`}>
-                  <Text style={{ ...Typography.bodyMedium, color: theme.textPrimary }}>
-                    {item.drugName}
-                  </Text>
+                  <Text style={{ ...Typography.bodyMedium, color: theme.textPrimary }}>{item.drugName}</Text>
                   <Text style={{ ...Typography.caption, color: theme.textSecondary, marginTop: Spacing.xs }}>
                     {[item.strength, item.doseForm, item.route].filter(Boolean).join(' \u00B7 ')}
                   </Text>

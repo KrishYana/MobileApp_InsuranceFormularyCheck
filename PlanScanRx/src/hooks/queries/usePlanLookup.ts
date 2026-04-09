@@ -16,7 +16,7 @@ export function useHiosLookup() {
 }
 
 export function useGroupLookup() {
-  return useMutation<Plan, Error, { groupId: string }>({
-    mutationFn: ({ groupId }) => formularyService.lookupPlanByGroupId(groupId),
+  return useMutation<Plan, Error, { groupId: string; planId?: string }>({
+    mutationFn: ({ groupId, planId }) => formularyService.lookupPlanByGroupId(groupId, planId),
   });
 }
