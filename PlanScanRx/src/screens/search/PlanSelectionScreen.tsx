@@ -46,7 +46,10 @@ export default function PlanSelectionScreen({ navigation, route }: Props) {
     return plans.filter((p: Plan) => p.planName.toLowerCase().includes(q));
   }, [plans, debouncedSearch]);
 
+  const addToBasket = useAppStore((s) => s.addToBasket);
+
   const handlePlanPress = (plan: Plan) => {
+    addToBasket(plan);
     navigation.navigate('DrugSearch', {
       planId: plan.planId,
       planName: plan.planName,

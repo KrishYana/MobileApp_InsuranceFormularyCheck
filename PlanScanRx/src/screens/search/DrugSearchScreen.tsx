@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -41,11 +41,19 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
 
   // Plan basket
   const planBasket = useAppStore((s) => s.planBasket);
+  const addToBasket = useAppStore((s) => s.addToBasket);
   const removeFromBasket = useAppStore((s) => s.removeFromBasket);
   const clearBasket = useAppStore((s) => s.clearBasket);
 
-  // Use basket if populated, otherwise fall back to route param (single-plan flow)
-  const activePlans = planBasket.length > 0 ? planBasket : [{ planId, planName } as any];
+  // Seed basket from route params on mount (covers single-plan flows that skip basket)
+  useEffect(() => {
+    if (planId && !planBasket.some((p) => p.planId === planId)) {
+      addToBasket({ planId, planName, insurerId: 0, stateCode: '', planType: null, marketType: null, metalLevel: null, planYear: 0, isActive: true } as any);
+    }
+  }, [planId]);
+
+  // Always read from basket
+  const activePlans = planBasket;
 
   const [query, setQuery] = useState('');
   const [formulationDrug, setFormulationDrug] = useState<Drug | null>(null);
@@ -104,14 +112,14 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
       setFormulationDrug(null);
       setFormulations([]);
 
+      if (activePlans.length === 0) return;
+
       if (activePlans.length > 1) {
-        // Multiple plans — go to comparison
         navigation.navigate('CoverageComparison', {
           planIds: activePlans.map((p) => p.planId),
           drugId: drug.drugId,
         });
       } else {
-        // Single plan — go to result
         navigation.navigate('CoverageResult', {
           planId: activePlans[0].planId,
           drugId: drug.drugId,
@@ -150,32 +158,30 @@ export default function DrugSearchScreen({ navigation, route }: Props) {
       </View>
 
       {/* Plan basket chips */}
-      {activePlans.length > 0 && (
-        <View style={{ paddingHorizontal: Spacing.xl, paddingBottom: Spacing.sm }}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: Spacing.sm }}>
+      <View style={{ paddingHorizontal: Spacing.xl, paddingBottom: Spacing.sm }}>
+        {activePlans.length > 0 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: Spacing.sm, flexDirection: 'row' }}>
             {activePlans.map((p) => (
               <NeuInset key={p.planId} level="insetSmall" cornerRadius={Radius.full}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing.xs, paddingLeft: Spacing.md, paddingRight: Spacing.sm, gap: Spacing.xs }}>
                   <Text style={{ ...Typography.caption, color: theme.textPrimary }} numberOfLines={1}>
                     {p.planName || `Plan #${p.planId}`}
                   </Text>
-                  {planBasket.length > 0 && (
-                    <Pressable onPress={() => removeFromBasket(p.planId)} hitSlop={6}>
-                      <AppIcon name="close" size={12} color={theme.textSecondary} />
-                    </Pressable>
-                  )}
+                  <Pressable onPress={() => removeFromBasket(p.planId)} hitSlop={6}>
+                    <AppIcon name="close" size={12} color={theme.textSecondary} />
+                  </Pressable>
                 </View>
               </NeuInset>
             ))}
           </ScrollView>
-          {/* Add more plans link */}
-          <Pressable onPress={handleAddMorePlans} style={{ marginTop: Spacing.sm }}>
-            <Text style={{ ...Typography.caption, color: theme.textAccent }}>
-              + Add more plans
-            </Text>
-          </Pressable>
-        </View>
-      )}
+        )}
+        {/* Add more plans link */}
+        <Pressable onPress={handleAddMorePlans} style={{ marginTop: Spacing.sm }}>
+          <Text style={{ ...Typography.caption, color: theme.textAccent }}>
+            + Add more plans
+          </Text>
+        </Pressable>
+      </View>
 
       {/* Search bar */}
       <View style={{ paddingHorizontal: Spacing.xl, marginBottom: Spacing.md }}>
