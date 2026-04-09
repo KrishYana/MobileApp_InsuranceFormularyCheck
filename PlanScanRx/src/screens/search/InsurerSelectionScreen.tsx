@@ -148,7 +148,7 @@ export default function InsurerSelectionScreen({ navigation }: Props) {
         ItemSeparatorComponent={() => <View style={{ height: Spacing.md }} />}
         keyboardShouldPersistTaps="handled"
         renderSectionHeader={({ section: { title } }) => (
-          <NeuSurface level="flat" cornerRadius={Radius.sm}>
+          <NeuSurface level="none" cornerRadius={Radius.inner}>
             <View
               style={{
                 paddingVertical: Spacing.md,

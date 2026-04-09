@@ -11,13 +11,13 @@ type LoadingStateProps = {
   layout?: 'list' | 'card' | 'detail';
 };
 
-function SkeletonBar({ width, height = 16 }: { width: string; height?: number }) {
+function SkeletonBar({ width, height = 16 }: { width: `${number}%`; height?: number }) {
   const { theme } = useTheme();
   return (
     <View
       style={{
         height,
-        width,
+        width: width as `${number}%`,
         backgroundColor: theme.shadowDark,
         borderRadius: Radius.inner,
         opacity: 0.15,

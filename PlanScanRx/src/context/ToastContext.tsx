@@ -37,7 +37,7 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<Toast | null>(null);
   const fadeAnim = useRef(new RNAnimated.Value(0)).current;
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
 
